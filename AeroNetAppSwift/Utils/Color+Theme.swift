@@ -5,11 +5,17 @@ extension Color {
 }
 
 struct ColorTheme {
-    let background = Color(hex: "#162E36")
-    let accentGold = Color(hex: "#D4AF37")
+    // Colores basados en la nueva imagen (Deep Blue, Bright Teal, Light Blue)
+    let background = Color(hex: "#09244A") // Azul profundo
+    let backgroundGradientTop = Color(hex: "#051632")
+    let backgroundGradientBottom = Color(hex: "#15447C")
+    
+    let accentGold = Color(hex: "#00D2A0") // En lugar de dorado, usamos el Bright Teal de la imagen
+    
     let textPrimary = Color.white
-    let textSecondary = Color(hex: "#7CA5A0")
-    let surface = Color.black.opacity(0.3)
+    let textSecondary = Color(hex: "#8CB3D9") // Azul claro para subtítulos
+    
+    let surface = Color.white.opacity(0.1) // Glassmorphism claro
 }
 
 extension Color {
