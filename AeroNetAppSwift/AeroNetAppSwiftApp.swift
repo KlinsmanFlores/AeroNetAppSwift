@@ -11,7 +11,7 @@ import SwiftUI
 struct AeroNetAppSwiftApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LoginView()
         }
     }
 }
