@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 
-@MainActor
 class LoginViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
@@ -19,14 +18,15 @@ class LoginViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        Task {
-            do {
-                let response = try await authService.login(email: email, password: password)
-                print("Login successful for user: \(response.user.email)")
-                isLoading = false
-            } catch {
-                errorMessage = "Login failed. Please check your credentials."
-                isLoading = false
+        authService.login(email: email, password: password) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let response):
+                    print("Login successful for user: \(response.user.email)")
+                case .failure(_):
+                    self?.errorMessage = "Login failed. Please check your credentials."
+                }
             }
         }
     }

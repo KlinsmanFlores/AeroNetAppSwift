@@ -2,13 +2,12 @@ import Foundation
 
 class NetworkManager {
     static let shared = NetworkManager()
-    
-    // Configura aquí la URL de tu backend
     let baseURL = "http://localhost:3000"
     
-    func request<T: Decodable>(endpoint: String, method: String = "GET", body: Data? = nil) async throws -> T {
+    func request<T: Decodable>(endpoint: String, method: String = "GET", body: Data? = nil, completion: @escaping (Result<T, Error>) -> Void) {
         guard let url = URL(string: baseURL + endpoint) else {
-            throw URLError(.badURL)
+            completion(.failure(URLError(.badURL)))
+            return
         }
         
         var request = URLRequest(url: url)
@@ -23,13 +22,25 @@ class NetworkManager {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, 
-              (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.badServerResponse)
-        }
-        
-        return try JSONDecoder().decode(T.self, from: data)
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, 
+                  (200...299).contains(httpResponse.statusCode),
+                  let data = data else {
+                completion(.failure(URLError(.badServerResponse)))
+                return
+            }
+            
+            do {
+                let decoded = try JSONDecoder().decode(T.self, from: data)
+                completion(.success(decoded))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
     }
 }
