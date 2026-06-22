@@ -1,0 +1,133 @@
+import SwiftUI
+
+struct CustomersListView: View {
+    @StateObject private var viewModel = CustomersViewModel()
+    @State private var selectedCustomer: Customer? = nil
+    @State private var editName = ""
+    @State private var editPhone = ""
+    @State private var editAddress = ""
+    
+    var body: some View {
+        ZStack {
+            Color.theme.background
+                .ignoresSafeArea()
+            
+            VStack {
+                if viewModel.isLoading && viewModel.customers.isEmpty {
+                    ProgressView("Cargando clientes...")
+                        .foregroundColor(.white)
+                } else if let error = viewModel.errorMessage {
+                    EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
+                } else if viewModel.customers.isEmpty {
+                    EmptyStateView(iconName: "person.3", title: "Sin Clientes", message: "No se encontraron clientes registrados en el sistema.")
+                } else {
+                    List {
+                        ForEach(viewModel.customers) { customer in
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(customer.full_name ?? "Sin nombre")
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundColor(.white)
+                                
+                                Text(customer.email ?? "Sin email")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.gray)
+                                
+                                HStack {
+                                    if let phone = customer.phone, !phone.isEmpty {
+                                        Label(phone, systemName: "phone.fill")
+                                            .font(.caption)
+                                            .foregroundColor(Color.theme.accent)
+                                    }
+                                    Spacer()
+                                    BadgeView(text: customer.statusLabel, status: customer.status ?? "pending")
+                                }
+                            }
+                            .padding(.vertical, 8)
+                            .listRowBackground(Color.theme.cardBackground.opacity(0.6))
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedCustomer = customer
+                                editName = customer.full_name ?? ""
+                                editPhone = customer.phone ?? ""
+                                editAddress = customer.address_text ?? ""
+                            }
+                        }
+                    }
+                    .listStyle(PlainListStyle())
+                    .background(Color.clear)
+                }
+            }
+        }
+        .navigationTitle("Clientes")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    Task {
+                        await viewModel.fetchCustomers()
+                    }
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                        .foregroundColor(Color.theme.accent)
+                }
+            }
+        }
+        .task {
+            await viewModel.fetchCustomers()
+        }
+        .sheet(item: $selectedCustomer) { customer in
+            NavigationStack {
+                ZStack {
+                    Color.theme.background
+                        .ignoresSafeArea()
+                    
+                    Form {
+                        Section(header: Text("Información Básica").foregroundColor(.gray)) {
+                            TextField("Nombre Completo", text: $editName)
+                                .foregroundColor(.white)
+                            TextField("Teléfono", text: $editPhone)
+                                .foregroundColor(.white)
+                            TextField("Dirección", text: $editAddress)
+                                .foregroundColor(.white)
+                        }
+                        .listRowBackground(Color.theme.surface)
+                    }
+                    .background(Color.clear)
+                    .scrollContentBackground(.hidden)
+                }
+                .navigationTitle("Editar Cliente")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Cancelar") {
+                            selectedCustomer = nil
+                        }
+                        .foregroundColor(.red)
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Guardar") {
+                            Task {
+                                let success = await viewModel.updateCustomer(
+                                    id: customer.id,
+                                    fullName: editName,
+                                    phone: editPhone,
+                                    address: editAddress
+                                )
+                                if success {
+                                    selectedCustomer = nil
+                                }
+                            }
+                        }
+                        .foregroundColor(Color.theme.accent)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct CustomersListView_Previews: PreviewProvider {
+    static var previews: some View {
+        CustomersListView()
+    }
+}
