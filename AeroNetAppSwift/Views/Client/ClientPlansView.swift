@@ -134,7 +134,7 @@ struct ClientPlansView: View {
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
                             
-                            Text("Hemos registrado tu solicitud de servicio para el plan \(plan.name ?? \"\"). Un asesor técnico se comunicará contigo a la brevedad.")
+                            Text("Hemos registrado tu solicitud de servicio para el plan \(plan.name ?? ""). Un asesor técnico se comunicará contigo a la brevedad.")
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
@@ -223,7 +223,7 @@ struct ClientPlansView: View {
                                         phone: clientPhone,
                                         latitude: nil,
                                         longitude: nil,
-                                        ticket_subject: "Nueva solicitud de instalación - \(plan.name ?? \"\")",
+                                        ticket_subject: "Nueva solicitud de instalación - \(plan.name ?? "")",
                                         ticket_description: requestNotes.isEmpty ? "Cliente solicita instalación." : requestNotes
                                     )
                                     
