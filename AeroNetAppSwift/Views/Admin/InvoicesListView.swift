@@ -115,11 +115,13 @@ struct InvoicesListView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 30)
                         
+                        Button("Generar") {
                             viewModel.generateMonthlyInvoices(period: selectedPeriod) { success in
                                 if success {
                                     showPeriodSheet = false
                                 }
                             }
+                        }
                         .primaryButton()
                         .padding(.horizontal, 30)
                         .padding(.top, 10)

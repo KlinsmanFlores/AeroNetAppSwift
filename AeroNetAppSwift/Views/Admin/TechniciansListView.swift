@@ -24,34 +24,7 @@ struct TechniciansListView: View {
                 } else if viewModel.technicians.isEmpty {
                     EmptyStateView(iconName: "wrench.and.screwdriver", title: "Sin Técnicos", message: "No hay técnicos registrados. Agrega uno nuevo.")
                 } else {
-                    List {
-                        ForEach(viewModel.technicians) { tech in
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(tech.displayName)
-                                    .font(.system(size: 16, weight: .bold))
-                                    .foregroundColor(.white)
-                                
-                                Text("Especialidad: \(tech.specialty ?? "Fibra Óptica")")
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .foregroundColor(Color.theme.accent)
-                                
-                                HStack {
-                                    if let phone = tech.phone, !phone.isEmpty {
-                                        Label(phone, systemImage: "phone.fill")
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                    }
-                                    Spacer()
-                                    BadgeView(text: tech.status ?? "activo", status: tech.status ?? "active")
-                                }
-                            }
-                            .padding(.vertical, 6)
-                            .listRowBackground(Color.theme.cardBackground.opacity(0.6))
-                        }
-                        .onDelete(perform: deleteTechnician)
-                    }
-                    .listStyle(PlainListStyle())
-                    .background(Color.clear)
+                    techList
                 }
             }
         }
@@ -133,6 +106,37 @@ struct TechniciansListView: View {
                 }
             }
         }
+    }
+    
+    private var techList: some View {
+        List {
+            ForEach(viewModel.technicians) { tech in
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(tech.displayName)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                    
+                    Text("Especialidad: \(tech.specialty ?? "Fibra Óptica")")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(Color.theme.accent)
+                    
+                    HStack {
+                        if let phone = tech.phone, !phone.isEmpty {
+                            Label(phone, systemImage: "phone.fill")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        Spacer()
+                        BadgeView(text: tech.status ?? "activo", status: tech.status ?? "active")
+                    }
+                }
+                .padding(.vertical, 6)
+                .listRowBackground(Color.theme.cardBackground.opacity(0.6))
+            }
+            .onDelete(perform: deleteTechnician)
+        }
+        .listStyle(PlainListStyle())
+        .background(Color.clear)
     }
     
     private func deleteTechnician(at offsets: IndexSet) {

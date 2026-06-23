@@ -104,52 +104,7 @@ struct ClientPlansView: View {
                             .padding(.horizontal, 30)
                         }
                     } else {
-                        Form {
-                            Section(header: Text("Plan Seleccionado").foregroundColor(.gray)) {
-                                HStack {
-                                    Text(plan.name ?? "")
-                                        .bold()
-                                    Spacer()
-                                    Text((plan.price ?? 0).currencyPEN)
-                                        .foregroundColor(Color.theme.accent)
-                                }
-                                .foregroundColor(.white)
-                            }
-                            .listRowBackground(Color.theme.surface)
-                            
-                            Section(header: Text("Tus Datos").foregroundColor(.gray)) {
-                                TextField("Nombre Completo", text: $clientName)
-                                    .foregroundColor(.white)
-                                TextField("Teléfono", text: $clientPhone)
-                                    .foregroundColor(.white)
-                                Picker("Documento", selection: $clientDocType) {
-                                    Text("DNI").tag("DNI")
-                                    Text("RUC").tag("RUC")
-                                }
-                                .foregroundColor(.white)
-                                TextField("Número de Documento", text: $clientDocNum)
-                                    .foregroundColor(.white)
-                            }
-                            .listRowBackground(Color.theme.surface)
-                            
-                            Section(header: Text("Detalles de Conexión").foregroundColor(.gray)) {
-                                TextField("Dirección de Instalación", text: $clientAddress)
-                                    .foregroundColor(.white)
-                                TextField("Notas Adicionales / Referencias", text: $requestNotes)
-                                    .foregroundColor(.white)
-                            }
-                            .listRowBackground(Color.theme.surface)
-                            
-                            if let error = submitError {
-                                Section {
-                                    Text(error)
-                                        .foregroundColor(Color.theme.danger)
-                                        .font(.caption)
-                                }
-                                .listRowBackground(Color.theme.surface)
-                            }
-                        }
-                        .background(Color.clear)
+                        requestForm(plan: plan)
                     }
                 }
                 .navigationTitle("Solicitud de Conexión")
@@ -245,6 +200,55 @@ struct ClientPlansView: View {
             }
         }
         .padding(.horizontal, 20)
+    }
+    
+    private func requestForm(plan: Plan) -> some View {
+        Form {
+            Section(header: Text("Plan Seleccionado").foregroundColor(.gray)) {
+                HStack {
+                    Text(plan.name ?? "")
+                        .bold()
+                    Spacer()
+                    Text((plan.price ?? 0).currencyPEN)
+                        .foregroundColor(Color.theme.accent)
+                }
+                .foregroundColor(.white)
+            }
+            .listRowBackground(Color.theme.surface)
+            
+            Section(header: Text("Tus Datos").foregroundColor(.gray)) {
+                TextField("Nombre Completo", text: $clientName)
+                    .foregroundColor(.white)
+                TextField("Teléfono", text: $clientPhone)
+                    .foregroundColor(.white)
+                Picker("Documento", selection: $clientDocType) {
+                    Text("DNI").tag("DNI")
+                    Text("RUC").tag("RUC")
+                }
+                .foregroundColor(.white)
+                TextField("Número de Documento", text: $clientDocNum)
+                    .foregroundColor(.white)
+            }
+            .listRowBackground(Color.theme.surface)
+            
+            Section(header: Text("Detalles de Conexión").foregroundColor(.gray)) {
+                TextField("Dirección de Instalación", text: $clientAddress)
+                    .foregroundColor(.white)
+                TextField("Notas Adicionales / Referencias", text: $requestNotes)
+                    .foregroundColor(.white)
+            }
+            .listRowBackground(Color.theme.surface)
+            
+            if let error = submitError {
+                Section {
+                    Text(error)
+                        .foregroundColor(Color.theme.danger)
+                        .font(.caption)
+                }
+                .listRowBackground(Color.theme.surface)
+            }
+        }
+        .background(Color.clear)
     }
     
     private func clearFields() {

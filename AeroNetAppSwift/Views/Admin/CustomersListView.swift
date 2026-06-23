@@ -5,7 +5,6 @@ struct CustomersListView: View {
     @State private var selectedCustomer: Customer? = nil
     @State private var editName = ""
     @State private var editPhone = ""
-    @State private var editAddress = ""
     
     var body: some View {
         ZStack {
@@ -53,8 +52,6 @@ struct CustomersListView: View {
                                 .foregroundColor(.white)
                             TextField("Teléfono", text: $editPhone)
                                 .foregroundColor(.white)
-                            TextField("Dirección", text: $editAddress)
-                                .foregroundColor(.white)
                         }
                         .listRowBackground(Color.theme.surface)
                     }
@@ -75,7 +72,7 @@ struct CustomersListView: View {
                                     id: customer.id,
                                     fullName: editName,
                                     phone: editPhone,
-                                    address: editAddress
+                                    address: ""
                                 ) { success in
                                     if success {
                                         selectedCustomer = nil
@@ -100,7 +97,6 @@ struct CustomersListView: View {
                         selectedCustomer = customer
                         editName = customer.full_name ?? ""
                         editPhone = customer.phone ?? ""
-                        editAddress = customer.address_text ?? ""
                     }
             }
         }
