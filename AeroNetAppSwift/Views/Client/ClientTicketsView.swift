@@ -28,42 +28,7 @@ struct ClientTicketsView: View {
                         message: "¿Tienes algún inconveniente? Crea un ticket de soporte y te ayudaremos."
                     )
                 } else {
-                    List {
-                        ForEach(viewModel.tickets) { ticket in
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Text(ticket.subject ?? "Sin Asunto")
-                                        .font(.system(size: 15, weight: .bold))
-                                        .foregroundColor(.white)
-                                    Spacer()
-                                    BadgeView(text: ticket.statusLabel, status: ticket.status ?? "open")
-                                }
-                                
-                                Text(ticket.description ?? "Sin descripción")
-                                    .font(.system(size: 13))
-                                    .foregroundColor(.gray)
-                                    .lineLimit(2)
-                                
-                                HStack {
-                                    Label("Prioridad: \(ticket.priorityLabel)", systemImage: "flag.fill")
-                                        .font(.caption)
-                                        .foregroundColor(priorityColor(ticket.priority))
-                                    
-                                    Spacer()
-                                    
-                                    if let dateStr = ticket.created_at {
-                                        Text(dateStr)
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                    }
-                                }
-                            }
-                            .padding(.vertical, 6)
-                            .listRowBackground(Color.theme.cardBackground.opacity(0.6))
-                        }
-                    }
-                    .listStyle(PlainListStyle())
-                    .background(Color.clear)
+                    ticketsList
                 }
             }
         }
@@ -144,7 +109,6 @@ struct ClientTicketsView: View {
                         .listRowBackground(Color.theme.surface)
                     }
                     .background(Color.clear)
-                    .scrollContentBackground(.hidden)
                 }
                 .navigationTitle("Nuevo Ticket")
                 .navigationBarTitleDisplayMode(.inline)
@@ -175,6 +139,49 @@ struct ClientTicketsView: View {
                         }
                         .foregroundColor(Color.theme.accent)
                     }
+                }
+            }
+        }
+    }
+    
+    private var ticketsList: some View {
+        List {
+            ForEach(viewModel.tickets) { ticket in
+                ticketRow(ticket)
+                    .padding(.vertical, 6)
+                    .listRowBackground(Color.theme.cardBackground.opacity(0.6))
+            }
+        }
+        .listStyle(PlainListStyle())
+        .background(Color.clear)
+    }
+    
+    private func ticketRow(_ ticket: Ticket) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(ticket.subject ?? "Sin Asunto")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundColor(.white)
+                Spacer()
+                BadgeView(text: ticket.statusLabel, status: ticket.status ?? "open")
+            }
+            
+            Text(ticket.description ?? "Sin descripción")
+                .font(.system(size: 13))
+                .foregroundColor(.gray)
+                .lineLimit(2)
+            
+            HStack {
+                Label("Prioridad: \(ticket.priorityLabel)", systemImage: "flag.fill")
+                    .font(.caption)
+                    .foregroundColor(priorityColor(ticket.priority))
+                
+                Spacer()
+                
+                if let dateStr = ticket.created_at {
+                    Text(dateStr)
+                        .font(.caption)
+                        .foregroundColor(.gray)
                 }
             }
         }

@@ -71,41 +71,7 @@ struct InvoicesListView: View {
                 } else if viewModel.invoices.isEmpty {
                     EmptyStateView(iconName: "doc.text", title: "Sin Comprobantes", message: "No hay facturas ni deudas emitidas en el sistema.")
                 } else {
-                    List {
-                        ForEach(viewModel.invoices) { invoice in
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Text(invoice.service?.customer?.full_name ?? "Cliente Desconocido")
-                                        .font(.system(size: 15, weight: .bold))
-                                        .foregroundColor(.white)
-                                    Spacer()
-                                    BadgeView(text: invoice.statusLabel, status: invoice.status ?? "pending")
-                                }
-                                
-                                Text("Periodo: \(invoice.period ?? "N/A") | Vence: \(invoice.due_date ?? "Sin fecha")")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.gray)
-                                
-                                HStack {
-                                    if let address = invoice.service?.address_text {
-                                        Text(address)
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                            .lineLimit(1)
-                                    }
-                                    Spacer()
-                                    Text((invoice.total ?? 0.0).currencyPEN)
-                                        .font(.system(size: 16, weight: .bold))
-                                        .foregroundColor(.white)
-                                }
-                            }
-                            .padding(.vertical, 6)
-                            .listRowBackground(Color.theme.cardBackground.opacity(0.6))
-                        }
-                        .onDelete(perform: deleteInvoice)
-                    }
-                    .listStyle(PlainListStyle())
-                    .background(Color.clear)
+                    invoicesList
                 }
             }
         }
@@ -173,6 +139,48 @@ struct InvoicesListView: View {
                 }
             }
             .presentationDetents([.fraction(0.4)])
+        }
+    }
+    
+    private var invoicesList: some View {
+        List {
+            ForEach(viewModel.invoices) { invoice in
+                invoiceRow(invoice)
+                    .padding(.vertical, 6)
+                    .listRowBackground(Color.theme.cardBackground.opacity(0.6))
+            }
+            .onDelete(perform: deleteInvoice)
+        }
+        .listStyle(PlainListStyle())
+        .background(Color.clear)
+    }
+    
+    private func invoiceRow(_ invoice: Invoice) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(invoice.service?.customer?.full_name ?? "Cliente Desconocido")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundColor(.white)
+                Spacer()
+                BadgeView(text: invoice.statusLabel, status: invoice.status ?? "pending")
+            }
+            
+            Text("Periodo: \(invoice.period ?? "N/A") | Vence: \(invoice.due_date ?? "Sin fecha")")
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+            
+            HStack {
+                if let address = invoice.service?.address_text {
+                    Text(address)
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                        .lineLimit(1)
+                }
+                Spacer()
+                Text((invoice.total ?? 0.0).currencyPEN)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.white)
+            }
         }
     }
     

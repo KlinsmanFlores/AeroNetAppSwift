@@ -53,7 +53,9 @@ struct ClientTabView: View {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = UIColor(Color.theme.backgroundGradientBottom)
             UITabBar.appearance().standardAppearance = appearance
-            UITabBar.appearance().scrollEdgeAppearance = appearance
+            if #available(iOS 15.0, *) {
+                UITabBar.appearance().scrollEdgeAppearance = appearance
+            }
         }
     }
 }

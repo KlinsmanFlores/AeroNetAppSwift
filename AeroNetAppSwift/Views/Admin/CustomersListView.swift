@@ -21,40 +21,7 @@ struct CustomersListView: View {
                 } else if viewModel.customers.isEmpty {
                     EmptyStateView(iconName: "person.3", title: "Sin Clientes", message: "No se encontraron clientes registrados en el sistema.")
                 } else {
-                    List {
-                        ForEach(viewModel.customers) { customer in
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(customer.full_name ?? "Sin nombre")
-                                    .font(.system(size: 16, weight: .bold))
-                                    .foregroundColor(.white)
-                                
-                                Text(customer.email ?? "Sin email")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.gray)
-                                
-                                HStack {
-                                    if let phone = customer.phone, !phone.isEmpty {
-                                        Label(phone, systemImage: "phone.fill")
-                                            .font(.caption)
-                                            .foregroundColor(Color.theme.accent)
-                                    }
-                                    Spacer()
-                                    BadgeView(text: customer.statusLabel, status: customer.status ?? "pending")
-                                }
-                            }
-                            .padding(.vertical, 8)
-                            .listRowBackground(Color.theme.cardBackground.opacity(0.6))
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                selectedCustomer = customer
-                                editName = customer.full_name ?? ""
-                                editPhone = customer.phone ?? ""
-                                editAddress = customer.address_text ?? ""
-                            }
-                        }
-                    }
-                    .listStyle(PlainListStyle())
-                    .background(Color.clear)
+                    customersList
                 }
             }
         }
@@ -92,7 +59,6 @@ struct CustomersListView: View {
                         .listRowBackground(Color.theme.surface)
                     }
                     .background(Color.clear)
-                    .scrollContentBackground(.hidden)
                 }
                 .navigationTitle("Editar Cliente")
                 .navigationBarTitleDisplayMode(.inline)
@@ -119,6 +85,47 @@ struct CustomersListView: View {
                         .foregroundColor(Color.theme.accent)
                     }
                 }
+            }
+        }
+    }
+    
+    private var customersList: some View {
+        List {
+            ForEach(viewModel.customers) { customer in
+                customerRow(customer)
+                    .padding(.vertical, 8)
+                    .listRowBackground(Color.theme.cardBackground.opacity(0.6))
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedCustomer = customer
+                        editName = customer.full_name ?? ""
+                        editPhone = customer.phone ?? ""
+                        editAddress = customer.address_text ?? ""
+                    }
+            }
+        }
+        .listStyle(PlainListStyle())
+        .background(Color.clear)
+    }
+    
+    private func customerRow(_ customer: Customer) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(customer.full_name ?? "Sin nombre")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(.white)
+            
+            Text(customer.email ?? "Sin email")
+                .font(.system(size: 14))
+                .foregroundColor(.gray)
+            
+            HStack {
+                if let phone = customer.phone, !phone.isEmpty {
+                    Label(phone, systemImage: "phone.fill")
+                        .font(.caption)
+                        .foregroundColor(Color.theme.accent)
+                }
+                Spacer()
+                BadgeView(text: customer.statusLabel, status: customer.status ?? "pending")
             }
         }
     }

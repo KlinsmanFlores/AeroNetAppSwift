@@ -101,7 +101,6 @@ struct TechniciansListView: View {
                         .listRowBackground(Color.theme.surface)
                     }
                     .background(Color.clear)
-                    .scrollContentBackground(.hidden)
                 }
                 .navigationTitle("Registrar Técnico")
                 .navigationBarTitleDisplayMode(.inline)

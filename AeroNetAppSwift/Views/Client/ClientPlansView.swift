@@ -50,47 +50,7 @@ struct ClientPlansView: View {
                                 .padding(.top, 16)
                             
                             ForEach(viewModel.plans) { plan in
-                                GlassCard(cornerRadius: 20, padding: 20) {
-                                    VStack(alignment: .leading, spacing: 14) {
-                                        HStack {
-                                            VStack(alignment: .leading, spacing: 4) {
-                                                Text(plan.name ?? "Plan Fibra")
-                                                    .font(.system(size: 18, weight: .bold))
-                                                    .foregroundColor(.white)
-                                                
-                                                Text("\(Int(plan.speed_mbps ?? 0)) Mbps")
-                                                    .font(.system(size: 14, weight: .bold))
-                                                    .foregroundColor(Color.theme.accent)
-                                            }
-                                            
-                                            Spacer()
-                                            
-                                            Text((plan.price ?? 0).currencyPEN)
-                                                .font(.system(size: 20, weight: .bold))
-                                                .foregroundColor(.white)
-                                        }
-                                        
-                                        if let desc = plan.description, !desc.isEmpty {
-                                            Text(desc)
-                                                .font(.system(size: 13))
-                                                .foregroundColor(Color.theme.textSecondary)
-                                        }
-                                        
-                                        Button(action: {
-                                            selectedPlan = plan
-                                        }) {
-                                            Text("Solicitar Instalación")
-                                                .font(.system(size: 14, weight: .bold))
-                                                .frame(maxWidth: .infinity)
-                                                .padding(.vertical, 10)
-                                                .background(Color.theme.accent)
-                                                .foregroundColor(Color.theme.background)
-                                                .cornerRadius(10)
-                                        }
-                                        .buttonStyle(ScaleButtonStyle())
-                                    }
-                                }
-                                .padding(.horizontal, 20)
+                                planCard(plan)
                             }
                         }
                     }
@@ -190,7 +150,6 @@ struct ClientPlansView: View {
                             }
                         }
                         .background(Color.clear)
-                        .scrollContentBackground(.hidden)
                     }
                 }
                 .navigationTitle("Solicitud de Conexión")
@@ -242,6 +201,50 @@ struct ClientPlansView: View {
                 }
             }
         }
+    }
+    
+    private func planCard(_ plan: Plan) -> some View {
+        GlassCard(cornerRadius: 20, padding: 20) {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(plan.name ?? "Plan Fibra")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.white)
+                        
+                        Text("\(Int(plan.speed_mbps ?? 0)) Mbps")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(Color.theme.accent)
+                    }
+                    
+                    Spacer()
+                    
+                    Text((plan.price ?? 0).currencyPEN)
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.white)
+                }
+                
+                if let desc = plan.description, !desc.isEmpty {
+                    Text(desc)
+                        .font(.system(size: 13))
+                        .foregroundColor(Color.theme.textSecondary)
+                }
+                
+                Button(action: {
+                    selectedPlan = plan
+                }) {
+                    Text("Solicitar Instalación")
+                        .font(.system(size: 14, weight: .bold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(Color.theme.accent)
+                        .foregroundColor(Color.theme.background)
+                        .cornerRadius(10)
+                }
+                .buttonStyle(ScaleButtonStyle())
+            }
+        }
+        .padding(.horizontal, 20)
     }
     
     private func clearFields() {

@@ -106,7 +106,6 @@ struct PlansListView: View {
                         .listRowBackground(Color.theme.surface)
                     }
                     .background(Color.clear)
-                    .scrollContentBackground(.hidden)
                 }
                 .navigationTitle("Nuevo Plan")
                 .navigationBarTitleDisplayMode(.inline)

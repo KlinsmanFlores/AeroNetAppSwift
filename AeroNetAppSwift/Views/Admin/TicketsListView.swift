@@ -22,55 +22,7 @@ struct TicketsListView: View {
                 } else if viewModel.tickets.isEmpty {
                     EmptyStateView(iconName: "lifepreserver", title: "Sin Tickets", message: "No hay tickets de soporte ni solicitudes registradas.")
                 } else {
-                    List {
-                        ForEach(viewModel.tickets) { ticket in
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Text(ticket.subject ?? "Sin Asunto")
-                                        .font(.system(size: 15, weight: .bold))
-                                        .foregroundColor(.white)
-                                    Spacer()
-                                    BadgeView(text: ticket.statusLabel, status: ticket.status ?? "open")
-                                }
-                                
-                                Text(ticket.description ?? "Sin descripción")
-                                    .font(.system(size: 13))
-                                    .foregroundColor(.gray)
-                                    .lineLimit(2)
-                                
-                                HStack {
-                                    Label("Prioridad: \(ticket.priorityLabel)", systemImage: "flag.fill")
-                                        .font(.caption)
-                                        .foregroundColor(priorityColor(ticket.priority))
-                                    
-                                    Spacer()
-                                    
-                                    Text("Cliente: \(ticket.customer?.full_name ?? "N/A")")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                            .padding(.vertical, 6)
-                            .listRowBackground(Color.theme.cardBackground.opacity(0.6))
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                selectedTicket = ticket
-                                editStatus = ticket.status ?? "open"
-                                editPriority = ticket.priority ?? "medium"
-                                selectedTechId = ticket.technician_id ?? ""
-                                
-                                TechnicianService.shared.fetchAll { result in
-                                    DispatchQueue.main.async {
-                                        if case .success(let techs) = result {
-                                            techniciansList = techs
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .listStyle(PlainListStyle())
-                    .background(Color.clear)
+                    ticketsList
                 }
             }
         }
@@ -128,7 +80,6 @@ struct TicketsListView: View {
                         .listRowBackground(Color.theme.surface)
                     }
                     .background(Color.clear)
-                    .scrollContentBackground(.hidden)
                 }
                 .navigationTitle("Detalles del Ticket")
                 .navigationBarTitleDisplayMode(.inline)
@@ -167,6 +118,62 @@ struct TicketsListView: View {
         case "high": return .orange
         case "urgent": return .red
         default: return .gray
+        }
+    }
+    
+    private var ticketsList: some View {
+        List {
+            ForEach(viewModel.tickets) { ticket in
+                ticketRow(ticket)
+                    .padding(.vertical, 6)
+                    .listRowBackground(Color.theme.cardBackground.opacity(0.6))
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedTicket = ticket
+                        editStatus = ticket.status ?? "open"
+                        editPriority = ticket.priority ?? "medium"
+                        selectedTechId = ticket.technician_id ?? ""
+                        
+                        TechnicianService.shared.fetchAll { result in
+                            DispatchQueue.main.async {
+                                if case .success(let techs) = result {
+                                    techniciansList = techs
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+        .listStyle(PlainListStyle())
+        .background(Color.clear)
+    }
+    
+    private func ticketRow(_ ticket: Ticket) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(ticket.subject ?? "Sin Asunto")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundColor(.white)
+                Spacer()
+                BadgeView(text: ticket.statusLabel, status: ticket.status ?? "open")
+            }
+            
+            Text(ticket.description ?? "Sin descripción")
+                .font(.system(size: 13))
+                .foregroundColor(.gray)
+                .lineLimit(2)
+            
+            HStack {
+                Label("Prioridad: \(ticket.priorityLabel)", systemImage: "flag.fill")
+                    .font(.caption)
+                    .foregroundColor(priorityColor(ticket.priority))
+                
+                Spacer()
+                
+                Text("Cliente: \(ticket.customer?.full_name ?? "N/A")")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
         }
     }
 }

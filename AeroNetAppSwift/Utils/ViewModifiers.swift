@@ -79,7 +79,7 @@ struct PrimaryButtonModifier: ViewModifier {
             .padding(.vertical, 16)
             .background(
                 LinearGradient(
-                    colors: isDisabled ? [Color.gray] : [Color.theme.accent, Color.theme.accentLight],
+                    gradient: Gradient(colors: isDisabled ? [Color.gray] : [Color.theme.accent, Color.theme.accentLight]),
                     startPoint: .leading,
                     endPoint: .trailing
                 )
@@ -102,7 +102,6 @@ struct SectionHeaderModifier: ViewModifier {
             .font(.system(size: 14, weight: .semibold))
             .foregroundColor(Color.theme.textSecondary)
             .textCase(.uppercase)
-            .kerning(1.2)
     }
 }
 
