@@ -149,7 +149,7 @@ struct PlansListView: View {
     private func deletePlan(at offsets: IndexSet) {
         for index in offsets {
             let plan = viewModel.plans[index]
-            viewModel.deletePlan(id: plan.id) { _ in
+            viewModel.deletePlan(id: plan.id ?? "") { _ in
                 // Recargar con caché
                 viewModel.fetchPlans()
             }

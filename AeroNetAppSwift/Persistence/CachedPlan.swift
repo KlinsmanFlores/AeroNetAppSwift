@@ -14,7 +14,7 @@ public class CachedPlan: NSManagedObject {
     convenience init(from plan: Plan, context: NSManagedObjectContext) {
         let entity = NSEntityDescription.entity(forEntityName: "CachedPlan", in: context)!
         self.init(entity: entity, insertInto: context)
-        self.planId = plan.id
+        self.planId = plan.id ?? UUID().uuidString
         self.name = plan.name ?? ""
         self.price = plan.price ?? 0
         self.speedMbps = plan.speed_mbps ?? 0

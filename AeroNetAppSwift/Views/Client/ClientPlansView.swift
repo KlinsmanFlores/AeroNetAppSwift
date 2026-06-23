@@ -128,9 +128,8 @@ struct ClientPlansView: View {
                             Button("Enviar") {
                                 isSubmitting = true
                                 submitError = nil
-                                
                                 let req = CreateServiceWithTicketRequest(
-                                    plan_id: plan.id,
+                                    plan_id: plan.id ?? "",
                                     address_text: clientAddress,
                                     full_name: clientName,
                                     document_type: clientDocType,

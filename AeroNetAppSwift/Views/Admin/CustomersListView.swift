@@ -73,7 +73,7 @@ struct CustomersListView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Guardar") {
                                 viewModel.updateCustomer(
-                                    id: customer.id,
+                                    id: customer.id ?? "",
                                     fullName: editName,
                                     phone: editPhone,
                                     address: ""
