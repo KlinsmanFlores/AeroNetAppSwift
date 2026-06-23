@@ -1,5 +1,4 @@
 import SwiftUI
-import SwiftData
 
 @main
 struct AeroNetAppSwiftApp: App {
@@ -35,7 +34,6 @@ struct AeroNetAppSwiftApp: App {
                 }
             }
         }
-        .modelContainer(for: [CachedPlan.self])
     }
 }
 

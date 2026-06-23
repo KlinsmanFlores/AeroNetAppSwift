@@ -1,7 +1,5 @@
 import Foundation
 import SwiftUI
-import SwiftData
-
 // MARK: - Auth Manager (Estado global de autenticación)
 @MainActor
 class AuthManager: ObservableObject {

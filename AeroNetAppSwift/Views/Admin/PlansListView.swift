@@ -1,8 +1,6 @@
 import SwiftUI
-import SwiftData
 
 struct PlansListView: View {
-    @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = PlansViewModel()
     @State private var showCreateSheet = false
     @State private var newName = ""
@@ -27,7 +25,7 @@ struct PlansListView: View {
                         
                         Button("Reintentar") {
                             Task {
-                                await viewModel.fetchPlans(modelContext: modelContext)
+                                await viewModel.fetchPlans()
                             }
                         }
                         .primaryButton()
@@ -85,7 +83,7 @@ struct PlansListView: View {
             }
         }
         .task {
-            await viewModel.fetchPlans(modelContext: modelContext)
+            await viewModel.fetchPlans()
         }
         .sheet(isPresented: $showCreateSheet) {
             NavigationStack {
@@ -135,7 +133,7 @@ struct PlansListView: View {
                                     showCreateSheet = false
                                     clearFields()
                                     // Recargar con caché
-                                    await viewModel.fetchPlans(modelContext: modelContext)
+                                    await viewModel.fetchPlans()
                                 }
                             }
                         }
@@ -152,7 +150,7 @@ struct PlansListView: View {
             Task {
                 _ = await viewModel.deletePlan(id: plan.id)
                 // Recargar con caché
-                await viewModel.fetchPlans(modelContext: modelContext)
+                await viewModel.fetchPlans()
             }
         }
     }

@@ -1,8 +1,6 @@
 import SwiftUI
-import SwiftData
 
 struct ClientPlansView: View {
-    @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = ClientPlansViewModel()
     @State private var selectedPlan: Plan? = nil
     
@@ -34,7 +32,7 @@ struct ClientPlansView: View {
                         
                         Button("Reintentar") {
                             Task {
-                                await viewModel.fetchPlans(modelContext: modelContext)
+                                await viewModel.fetchPlans()
                             }
                         }
                         .primaryButton()
@@ -106,7 +104,7 @@ struct ClientPlansView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     Task {
-                        await viewModel.fetchPlans(modelContext: modelContext)
+                        await viewModel.fetchPlans()
                     }
                 }) {
                     Image(systemName: "arrow.clockwise")
@@ -115,7 +113,7 @@ struct ClientPlansView: View {
             }
         }
         .task {
-            await viewModel.fetchPlans(modelContext: modelContext)
+            await viewModel.fetchPlans()
         }
         .sheet(item: $selectedPlan) { plan in
             NavigationStack {
