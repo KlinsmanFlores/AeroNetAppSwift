@@ -12,45 +12,7 @@ struct InvoicesListView: View {
             
             VStack {
                 // Botones de acción masiva
-                HStack(spacing: 12) {
-                    Button(action: {
-                        let today = Date()
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "yyyy-MM"
-                        selectedPeriod = formatter.string(from: today)
-                        showPeriodSheet = true
-                    }) {
-                        Label("Facturar Mes", systemImage: "doc.badge.plus")
-                            .font(.system(size: 13, weight: .bold))
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 12)
-                            .background(Color.theme.accent.opacity(0.15))
-                            .foregroundColor(Color.theme.accent)
-                            .cornerRadius(10)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.theme.accent.opacity(0.3), lineWidth: 1)
-                            )
-                    }
-                    .buttonStyle(ScaleButtonStyle())
-                    
-                    Button(action: {
-                        viewModel.forceBillingInvoices { _ in }
-                    }) {
-                        Label("Forzar Proceso", systemImage: "play.fill")
-                            .font(.system(size: 13, weight: .bold))
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 12)
-                            .background(Color.theme.success.opacity(0.15))
-                            .foregroundColor(Color.theme.success)
-                            .cornerRadius(10)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.theme.success.opacity(0.3), lineWidth: 1)
-                            )
-                    }
-                    .buttonStyle(ScaleButtonStyle())
-                }
+                actionButtons
                 .padding(.horizontal, 16)
                 .padding(.top, 10)
                 
@@ -140,7 +102,48 @@ struct InvoicesListView: View {
                     }
                 }
             }
-            .presentationDetents([.fraction(0.4)])
+        }
+    }
+    
+    private var actionButtons: some View {
+        HStack(spacing: 12) {
+            Button(action: {
+                let today = Date()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM"
+                selectedPeriod = formatter.string(from: today)
+                showPeriodSheet = true
+            }) {
+                Label("Facturar Mes", systemImage: "doc.badge.plus")
+                    .font(.system(size: 13, weight: .bold))
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 12)
+                    .background(Color.theme.accent.opacity(0.15))
+                    .foregroundColor(Color.theme.accent)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.theme.accent.opacity(0.3), lineWidth: 1)
+                    )
+            }
+            .buttonStyle(ScaleButtonStyle())
+            
+            Button(action: {
+                viewModel.forceBillingInvoices { _ in }
+            }) {
+                Label("Forzar Proceso", systemImage: "play.fill")
+                    .font(.system(size: 13, weight: .bold))
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 12)
+                    .background(Color.theme.success.opacity(0.15))
+                    .foregroundColor(Color.theme.success)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.theme.success.opacity(0.3), lineWidth: 1)
+                    )
+            }
+            .buttonStyle(ScaleButtonStyle())
         }
     }
     

@@ -110,15 +110,17 @@ struct ClientPlansView: View {
                 .navigationTitle("Solicitud de Conexión")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    if !submitSuccess {
-                        ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        if !submitSuccess {
                             Button("Cancelar") {
                                 selectedPlan = nil
                                 clearFields()
                             }
                             .foregroundColor(.red)
                         }
-                        ToolbarItem(placement: .navigationBarTrailing) {
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        if !submitSuccess {
                             Button("Enviar") {
                                 isSubmitting = true
                                 submitError = nil
