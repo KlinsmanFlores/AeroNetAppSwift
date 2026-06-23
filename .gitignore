@@ -1,0 +1,9 @@
+# Archivos de configuración locales
+AeroNetAppSwift/Services/Secrets.swift
+
+# Build folders
+build/
+DerivedData/
+*.xcworkspace/
+xcuserdata/
+*.pbxuser

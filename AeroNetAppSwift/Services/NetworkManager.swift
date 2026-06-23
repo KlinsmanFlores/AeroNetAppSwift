@@ -27,8 +27,8 @@ enum NetworkError: LocalizedError {
 class NetworkManager {
     static let shared = NetworkManager()
     
-    // IMPORTANTE: Cambia esta URL según tu entorno
-    let baseURL = "http://localhost:3000/api"
+    // IMPORTANTE: La URL base ahora se lee desde Secrets.swift
+    let baseURL = Secrets.apiBaseURL
     
     private init() {}
     
