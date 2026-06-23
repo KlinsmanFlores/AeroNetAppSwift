@@ -62,17 +62,16 @@ struct ClientInvoicesView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        await viewModel.fetchInvoices()
-                    }
+                    viewModel.fetchInvoices()
+                    
                 }) {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(Color.theme.accent)
                 }
             }
         }
-        .task {
-            await viewModel.fetchInvoices()
+        .onAppear {
+            viewModel.fetchInvoices()
         }
         .sheet(item: $selectedInvoice) { invoice in
             NavigationStack {

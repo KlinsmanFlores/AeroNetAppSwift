@@ -1,20 +1,24 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class ServicesViewModel: ObservableObject {
     @Published var services: [ServiceModel] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-    func fetchServices() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            self.services = try await ServiceService.shared.fetchAll()
-        } catch {
-            errorMessage = "Error al listar servicios: \(error.localizedDescription)"
+    func fetchServices() {
+        self.isLoading = true
+        self.errorMessage = nil
+        ServiceService.shared.fetchAll { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetched):
+                    self.services = fetched
+                case .failure(let error):
+                    self.errorMessage = "Error al listar servicios: \(error.localizedDescription)"
+                }
+                self.isLoading = false
+            }
         }
-        isLoading = false
     }
 }

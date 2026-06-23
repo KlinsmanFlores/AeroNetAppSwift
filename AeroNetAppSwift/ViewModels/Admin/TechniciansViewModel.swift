@@ -1,26 +1,30 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class TechniciansViewModel: ObservableObject {
     @Published var technicians: [Technician] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-    func fetchTechnicians() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            self.technicians = try await TechnicianService.shared.fetchAll()
-        } catch {
-            errorMessage = "Error al listar técnicos: \(error.localizedDescription)"
+    func fetchTechnicians() {
+        self.isLoading = true
+        self.errorMessage = nil
+        TechnicianService.shared.fetchAll { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetched):
+                    self.technicians = fetched
+                case .failure(let error):
+                    self.errorMessage = "Error al listar técnicos: \(error.localizedDescription)"
+                }
+                self.isLoading = false
+            }
         }
-        isLoading = false
     }
     
-    func createTechnician(email: String, password: String, fullName: String, phone: String?, docNumber: String?, specialty: String?) async -> Bool {
-        isLoading = true
-        errorMessage = nil
+    func createTechnician(email: String, password: String, fullName: String, phone: String?, docNumber: String?, specialty: String?, completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        self.errorMessage = nil
         
         let body = CreateTechnicianRequest(
             email: email,
@@ -31,30 +35,36 @@ class TechniciansViewModel: ObservableObject {
             specialization: specialty
         )
         
-        do {
-            _ = try await TechnicianService.shared.create(body)
-            await fetchTechnicians()
-            isLoading = false
-            return true
-        } catch {
-            errorMessage = "Error al registrar técnico: \(error.localizedDescription)"
-            isLoading = false
-            return false
+        TechnicianService.shared.create(body) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.fetchTechnicians()
+                    completion(true)
+                case .failure(let error):
+                    self.errorMessage = "Error al registrar técnico: \(error.localizedDescription)"
+                    self.isLoading = false
+                    completion(false)
+                }
+            }
         }
     }
     
-    func deleteTechnician(id: String) async -> Bool {
-        isLoading = true
-        errorMessage = nil
-        do {
-            try await TechnicianService.shared.delete(id: id)
-            await fetchTechnicians()
-            isLoading = false
-            return true
-        } catch {
-            errorMessage = "Error al eliminar técnico: \(error.localizedDescription)"
-            isLoading = false
-            return false
+    func deleteTechnician(id: String, completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        self.errorMessage = nil
+        TechnicianService.shared.delete(id: id) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.fetchTechnicians()
+                    completion(true)
+                case .failure(let error):
+                    self.errorMessage = "Error al eliminar técnico: \(error.localizedDescription)"
+                    self.isLoading = false
+                    completion(false)
+                }
+            }
         }
     }
 }

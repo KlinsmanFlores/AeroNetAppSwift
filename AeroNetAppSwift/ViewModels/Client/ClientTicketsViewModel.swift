@@ -1,27 +1,32 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class ClientTicketsViewModel: ObservableObject {
     @Published var tickets: [Ticket] = []
     @Published var isLoading = false
     @Published var isCreating = false
     @Published var errorMessage: String? = nil
     
-    func fetchTickets() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            self.tickets = try await TicketService.shared.fetchMyTickets()
-        } catch {
-            errorMessage = "Error al obtener tus tickets: \(error.localizedDescription)"
+    func fetchTickets() {
+        self.isLoading = true
+        self.errorMessage = nil
+        
+        TicketService.shared.fetchMyTickets { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetched):
+                    self.tickets = fetched
+                case .failure(let error):
+                    self.errorMessage = "Error al obtener tus tickets: \(error.localizedDescription)"
+                }
+                self.isLoading = false
+            }
         }
-        isLoading = false
     }
     
-    func createTicket(serviceId: String?, type: String, subject: String, description: String, priority: String, category: String?) async -> Bool {
-        isCreating = true
-        errorMessage = nil
+    func createTicket(serviceId: String?, type: String, subject: String, description: String, priority: String, category: String?, completion: @escaping (Bool) -> Void) {
+        self.isCreating = true
+        self.errorMessage = nil
         
         let body = CreateTicketRequest(
             service_id: serviceId,
@@ -32,15 +37,18 @@ class ClientTicketsViewModel: ObservableObject {
             category: category
         )
         
-        do {
-            _ = try await TicketService.shared.create(body)
-            await fetchTickets()
-            isCreating = false
-            return true
-        } catch {
-            errorMessage = "Error al crear ticket: \(error.localizedDescription)"
-            isCreating = false
-            return false
+        TicketService.shared.create(body) { result in
+            DispatchQueue.main.async {
+                self.isCreating = false
+                switch result {
+                case .success(_):
+                    self.fetchTickets()
+                    completion(true)
+                case .failure(let error):
+                    self.errorMessage = "Error al crear ticket: \(error.localizedDescription)"
+                    completion(false)
+                }
+            }
         }
     }
 }

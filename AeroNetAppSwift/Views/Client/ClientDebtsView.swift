@@ -68,8 +68,7 @@ struct ClientDebtsView: View {
                                             Spacer()
                                             
                                             Button(action: {
-                                                Task {
-                                                    let success = await viewModel.payInvoice(id: invoice.id)
+                                                viewModel.payInvoice(id: invoice.id) { success in
                                                     if success {
                                                         showingConfetti = true
                                                         // Ocultar confetti después de 4 segundos
@@ -116,17 +115,16 @@ struct ClientDebtsView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        await viewModel.fetchDebts()
-                    }
+                    viewModel.fetchDebts()
+                    
                 }) {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(Color.theme.accent)
                 }
             }
         }
-        .task {
-            await viewModel.fetchDebts()
+        .onAppear {
+            viewModel.fetchDebts()
         }
     }
 }

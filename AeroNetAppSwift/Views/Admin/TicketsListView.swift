@@ -59,10 +59,11 @@ struct TicketsListView: View {
                                 editPriority = ticket.priority ?? "medium"
                                 selectedTechId = ticket.technician_id ?? ""
                                 
-                                Task {
-                                    // Cargar técnicos para asignación
-                                    if let techs = try? await TechnicianService.shared.fetchAll() {
-                                        techniciansList = techs
+                                TechnicianService.shared.fetchAll { result in
+                                    DispatchQueue.main.async {
+                                        if case .success(let techs) = result {
+                                            techniciansList = techs
+                                        }
                                     }
                                 }
                             }
@@ -78,17 +79,16 @@ struct TicketsListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        await viewModel.fetchTickets()
-                    }
+                    viewModel.fetchTickets()
+                    
                 }) {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(Color.theme.accent)
                 }
             }
         }
-        .task {
-            await viewModel.fetchTickets()
+        .onAppear {
+            viewModel.fetchTickets()
         }
         .sheet(item: $selectedTicket) { ticket in
             NavigationStack {
@@ -141,18 +141,17 @@ struct TicketsListView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Actualizar") {
-                            Task {
-                                let success = await viewModel.updateTicket(
+                                viewModel.updateTicket(
                                     id: ticket.id,
                                     status: editStatus,
                                     technicianId: selectedTechId,
                                     priority: editPriority
-                                )
-                                if success {
-                                    selectedTicket = nil
-                                    await viewModel.fetchTickets()
+                                ) { success in
+                                    if success {
+                                        selectedTicket = nil
+                                        viewModel.fetchTickets()
+                                    }
                                 }
-                            }
                         }
                         .foregroundColor(Color.theme.accent)
                     }

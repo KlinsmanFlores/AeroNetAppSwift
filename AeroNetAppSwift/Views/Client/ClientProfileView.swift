@@ -116,14 +116,12 @@ struct ClientProfileView: View {
                                 }
                                 
                                 Button(action: {
-                                    Task {
-                                        _ = await viewModel.updateProfile(
-                                            fullName: editName,
-                                            phone: editPhone,
-                                            documentType: editDocType,
-                                            documentNumber: editDocNumber
-                                        )
-                                    }
+                                viewModel.updateProfile(
+                                    fullName: editName,
+                                    phone: editPhone,
+                                    documentType: editDocType,
+                                    documentNumber: editDocNumber
+                                ) { _ in }
                                 }) {
                                     if viewModel.isSaving {
                                         ProgressView()
@@ -159,8 +157,8 @@ struct ClientProfileView: View {
         }
         .navigationTitle("Mi Perfil")
         .navigationBarTitleDisplayMode(.inline)
-        .task {
-            await viewModel.fetchProfile()
+        .onAppear {
+            viewModel.fetchProfile()
             if let customer = viewModel.customer {
                 editName = customer.full_name ?? ""
                 editPhone = customer.phone ?? ""

@@ -1,20 +1,24 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class PaymentsViewModel: ObservableObject {
     @Published var payments: [Payment] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-    func fetchPayments() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            self.payments = try await PaymentService.shared.fetchAll()
-        } catch {
-            errorMessage = "Error al listar pagos: \(error.localizedDescription)"
+    func fetchPayments() {
+        self.isLoading = true
+        self.errorMessage = nil
+        PaymentService.shared.fetchAll { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetched):
+                    self.payments = fetched
+                case .failure(let error):
+                    self.errorMessage = "Error al listar pagos: \(error.localizedDescription)"
+                }
+                self.isLoading = false
+            }
         }
-        isLoading = false
     }
 }

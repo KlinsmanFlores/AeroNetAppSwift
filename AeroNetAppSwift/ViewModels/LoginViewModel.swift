@@ -1,28 +1,31 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class LoginViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    func login(authManager: AuthManager) async {
+    func login(authManager: AuthManager) {
         guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "Por favor ingrese correo y contraseña."
+            self.errorMessage = "Por favor ingrese correo y contraseña."
             return
         }
         
-        isLoading = true
-        errorMessage = nil
+        self.isLoading = true
+        self.errorMessage = nil
         
-        do {
-            let response = try await AuthService.shared.login(email: email, password: password)
-            authManager.loginSuccess(response: response)
-        } catch {
-            errorMessage = "Credenciales incorrectas o error de conexión."
+        AuthService.shared.login(email: email, password: password) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    authManager.loginSuccess(response: response)
+                case .failure(_):
+                    self.errorMessage = "Credenciales incorrectas o error de conexión."
+                }
+                self.isLoading = false
+            }
         }
-        isLoading = false
     }
 }

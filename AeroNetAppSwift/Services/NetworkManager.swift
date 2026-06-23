@@ -36,59 +36,78 @@ class NetworkManager {
     func request<T: Decodable>(
         endpoint: String,
         method: String = "GET",
-        body: Encodable? = nil
-    ) async throws -> T {
+        body: Encodable? = nil,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
         guard let url = URL(string: baseURL + endpoint) else {
-            throw NetworkError.badURL
+            completion(.failure(NetworkError.badURL))
+            return
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        // JWT Token
         if let token = UserDefaults.standard.string(forKey: "access_token") {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
-        // Body
         if let body = body {
-            request.httpBody = try JSONEncoder().encode(body)
-        }
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw NetworkError.badResponse(0)
-        }
-        
-        switch httpResponse.statusCode {
-        case 200...299:
             do {
-                let decoder = JSONDecoder()
-                return try decoder.decode(T.self, from: data)
+                request.httpBody = try JSONEncoder().encode(body)
             } catch {
-                throw NetworkError.decodingError(error)
+                completion(.failure(error))
+                return
             }
-        case 401:
-            throw NetworkError.unauthorized
-        case 403:
-            throw NetworkError.forbidden
-        case 404:
-            throw NetworkError.notFound
-        default:
-            throw NetworkError.badResponse(httpResponse.statusCode)
         }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(NetworkError.unknown(error)))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(NetworkError.badResponse(0)))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NetworkError.badResponse(httpResponse.statusCode)))
+                return
+            }
+            
+            switch httpResponse.statusCode {
+            case 200...299:
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(T.self, from: data)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(NetworkError.decodingError(error)))
+                }
+            case 401:
+                completion(.failure(NetworkError.unauthorized))
+            case 403:
+                completion(.failure(NetworkError.forbidden))
+            case 404:
+                completion(.failure(NetworkError.notFound))
+            default:
+                completion(.failure(NetworkError.badResponse(httpResponse.statusCode)))
+            }
+        }.resume()
     }
     
     // MARK: - Request sin respuesta tipada (para DELETE, etc)
     func requestVoid(
         endpoint: String,
         method: String = "DELETE",
-        body: Encodable? = nil
-    ) async throws {
+        body: Encodable? = nil,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
         guard let url = URL(string: baseURL + endpoint) else {
-            throw NetworkError.badURL
+            completion(.failure(NetworkError.badURL))
+            return
         }
         
         var request = URLRequest(url: url)
@@ -100,34 +119,50 @@ class NetworkManager {
         }
         
         if let body = body {
-            request.httpBody = try JSONEncoder().encode(body)
+            do {
+                request.httpBody = try JSONEncoder().encode(body)
+            } catch {
+                completion(.failure(error))
+                return
+            }
         }
         
-        let (_, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            let code = (response as? HTTPURLResponse)?.statusCode ?? 0
-            throw NetworkError.badResponse(code)
-        }
+        URLSession.shared.dataTask(with: request) { _, response, error in
+            if let error = error {
+                completion(.failure(NetworkError.unknown(error)))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                let code = (response as? HTTPURLResponse)?.statusCode ?? 0
+                completion(.failure(NetworkError.badResponse(code)))
+                return
+            }
+            
+            completion(.success(()))
+        }.resume()
     }
     
     // MARK: - POST con body dict genérico
     func postJSON<T: Decodable>(
         endpoint: String,
-        json: [String: Any]
-    ) async throws -> T {
-        try await requestJSON(endpoint: endpoint, method: "POST", json: json)
+        json: [String: Any],
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
+        requestJSON(endpoint: endpoint, method: "POST", json: json, completion: completion)
     }
     
     // MARK: - JSON Request with method (POST, PATCH, etc)
     func requestJSON<T: Decodable>(
         endpoint: String,
         method: String,
-        json: [String: Any]
-    ) async throws -> T {
+        json: [String: Any],
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
         guard let url = URL(string: baseURL + endpoint) else {
-            throw NetworkError.badURL
+            completion(.failure(NetworkError.badURL))
+            return
         }
         
         var request = URLRequest(url: url)
@@ -138,18 +173,43 @@ class NetworkManager {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
-        request.httpBody = try JSONSerialization.data(withJSONObject: json)
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            let code = (response as? HTTPURLResponse)?.statusCode ?? 0
-            if code == 401 { throw NetworkError.unauthorized }
-            if code == 403 { throw NetworkError.forbidden }
-            throw NetworkError.badResponse(code)
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: json)
+        } catch {
+            completion(.failure(error))
+            return
         }
         
-        return try JSONDecoder().decode(T.self, from: data)
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(NetworkError.unknown(error)))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(NetworkError.badResponse(0)))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NetworkError.badResponse(httpResponse.statusCode)))
+                return
+            }
+            
+            let code = httpResponse.statusCode
+            if !(200...299).contains(code) {
+                if code == 401 { completion(.failure(NetworkError.unauthorized)); return }
+                if code == 403 { completion(.failure(NetworkError.forbidden)); return }
+                completion(.failure(NetworkError.badResponse(code)))
+                return
+            }
+            
+            do {
+                let result = try JSONDecoder().decode(T.self, from: data)
+                completion(.success(result))
+            } catch {
+                completion(.failure(NetworkError.decodingError(error)))
+            }
+        }.resume()
     }
 }

@@ -24,9 +24,8 @@ struct PlansListView: View {
                             .padding()
                         
                         Button("Reintentar") {
-                            Task {
-                                await viewModel.fetchPlans()
-                            }
+                            viewModel.fetchPlans()
+                            
                         }
                         .primaryButton()
                         .padding()
@@ -82,8 +81,8 @@ struct PlansListView: View {
                 }
             }
         }
-        .task {
-            await viewModel.fetchPlans()
+        .onAppear {
+            viewModel.fetchPlans()
         }
         .sheet(isPresented: $showCreateSheet) {
             NavigationStack {
@@ -121,21 +120,20 @@ struct PlansListView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Crear") {
-                            Task {
                                 guard let price = Double(newPrice), let speed = Double(newSpeed) else { return }
-                                let success = await viewModel.createPlan(
+                                viewModel.createPlan(
                                     name: newName,
                                     price: price,
                                     speedMbps: speed,
                                     description: newDescription
-                                )
-                                if success {
-                                    showCreateSheet = false
-                                    clearFields()
-                                    // Recargar con caché
-                                    await viewModel.fetchPlans()
+                                ) { success in
+                                    if success {
+                                        showCreateSheet = false
+                                        clearFields()
+                                        // Recargar con caché
+                                        viewModel.fetchPlans()
+                                    }
                                 }
-                            }
                         }
                         .foregroundColor(Color.theme.accent)
                     }
@@ -147,10 +145,9 @@ struct PlansListView: View {
     private func deletePlan(at offsets: IndexSet) {
         for index in offsets {
             let plan = viewModel.plans[index]
-            Task {
-                _ = await viewModel.deletePlan(id: plan.id)
+            viewModel.deletePlan(id: plan.id) { _ in
                 // Recargar con caché
-                await viewModel.fetchPlans()
+                viewModel.fetchPlans()
             }
         }
     }

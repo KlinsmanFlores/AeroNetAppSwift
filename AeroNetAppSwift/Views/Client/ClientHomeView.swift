@@ -52,9 +52,8 @@ struct ClientHomeView: View {
                                 .multilineTextAlignment(.center)
                             
                             Button("Reintentar") {
-                                Task {
-                                    await viewModel.loadDashboard()
-                                }
+                                viewModel.loadDashboard()
+                                
                             }
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
@@ -171,12 +170,10 @@ struct ClientHomeView: View {
                 .padding(.bottom, 30)
             }
         }
-        .task {
-            await viewModel.loadDashboard()
+        .onAppear {
+            viewModel.loadDashboard()
         }
-        .refreshable {
-            await viewModel.loadDashboard()
-        }
+        
     }
 }
 

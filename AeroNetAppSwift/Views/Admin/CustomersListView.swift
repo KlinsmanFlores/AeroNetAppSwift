@@ -63,17 +63,16 @@ struct CustomersListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        await viewModel.fetchCustomers()
-                    }
+                    viewModel.fetchCustomers()
+                    
                 }) {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(Color.theme.accent)
                 }
             }
         }
-        .task {
-            await viewModel.fetchCustomers()
+        .onAppear {
+            viewModel.fetchCustomers()
         }
         .sheet(item: $selectedCustomer) { customer in
             NavigationStack {
@@ -106,17 +105,16 @@ struct CustomersListView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Guardar") {
-                            Task {
-                                let success = await viewModel.updateCustomer(
+                                viewModel.updateCustomer(
                                     id: customer.id,
                                     fullName: editName,
                                     phone: editPhone,
                                     address: editAddress
-                                )
-                                if success {
-                                    selectedCustomer = nil
+                                ) { success in
+                                    if success {
+                                        selectedCustomer = nil
+                                    }
                                 }
-                            }
                         }
                         .foregroundColor(Color.theme.accent)
                     }

@@ -60,9 +60,8 @@ struct DashboardView: View {
                                 .multilineTextAlignment(.center)
                             
                             Button("Reintentar") {
-                                Task {
-                                    await viewModel.loadDashboardData()
-                                }
+                                viewModel.loadDashboardData()
+                                
                             }
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
@@ -133,12 +132,10 @@ struct DashboardView: View {
                 .padding(.bottom, 30)
             }
         }
-        .task {
-            await viewModel.loadDashboardData()
+        .onAppear {
+            viewModel.loadDashboardData()
         }
-        .refreshable {
-            await viewModel.loadDashboardData()
-        }
+        
     }
 }
 

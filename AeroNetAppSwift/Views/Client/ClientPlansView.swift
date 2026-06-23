@@ -31,9 +31,8 @@ struct ClientPlansView: View {
                             .padding()
                         
                         Button("Reintentar") {
-                            Task {
-                                await viewModel.fetchPlans()
-                            }
+                            viewModel.fetchPlans()
+                            
                         }
                         .primaryButton()
                         .padding()
@@ -103,17 +102,16 @@ struct ClientPlansView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        await viewModel.fetchPlans()
-                    }
+                    viewModel.fetchPlans()
+                    
                 }) {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(Color.theme.accent)
                 }
             }
         }
-        .task {
-            await viewModel.fetchPlans()
+        .onAppear {
+            viewModel.fetchPlans()
         }
         .sheet(item: $selectedPlan) { plan in
             NavigationStack {
@@ -208,31 +206,33 @@ struct ClientPlansView: View {
                         }
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button("Enviar") {
-                                Task {
-                                    isSubmitting = true
-                                    submitError = nil
-                                    
-                                    let req = CreateServiceWithTicketRequest(
-                                        plan_id: plan.id,
-                                        address_text: clientAddress,
-                                        full_name: clientName,
-                                        document_type: clientDocType,
-                                        document_number: clientDocNum,
-                                        phone: clientPhone,
-                                        latitude: nil,
-                                        longitude: nil,
-                                        ticket_subject: "Nueva solicitud de instalación - \(plan.name ?? "")",
-                                        ticket_description: requestNotes.isEmpty ? "Cliente solicita instalación." : requestNotes
-                                    )
-                                    
-                                    do {
-                                        _ = try await ServiceService.shared.requestWithTicket(req)
-                                        submitSuccess = true
-                                        clearFields()
-                                    } catch {
-                                        submitError = "Error al procesar la solicitud: \(error.localizedDescription)"
+                                isSubmitting = true
+                                submitError = nil
+                                
+                                let req = CreateServiceWithTicketRequest(
+                                    plan_id: plan.id,
+                                    address_text: clientAddress,
+                                    full_name: clientName,
+                                    document_type: clientDocType,
+                                    document_number: clientDocNum,
+                                    phone: clientPhone,
+                                    latitude: nil,
+                                    longitude: nil,
+                                    ticket_subject: "Nueva solicitud de instalación - \(plan.name ?? "")",
+                                    ticket_description: requestNotes.isEmpty ? "Cliente solicita instalación." : requestNotes
+                                )
+                                
+                                ServiceService.shared.requestWithTicket(req) { result in
+                                    DispatchQueue.main.async {
+                                        switch result {
+                                        case .success(_):
+                                            submitSuccess = true
+                                            clearFields()
+                                        case .failure(let error):
+                                            submitError = "Error al procesar la solicitud: \(error.localizedDescription)"
+                                        }
+                                        isSubmitting = false
                                     }
-                                    isSubmitting = false
                                 }
                             }
                             .foregroundColor(Color.theme.accent)

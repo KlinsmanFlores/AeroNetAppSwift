@@ -61,17 +61,16 @@ struct ServicesListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        await viewModel.fetchServices()
-                    }
+                    viewModel.fetchServices()
+                    
                 }) {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(Color.theme.accent)
                 }
             }
         }
-        .task {
-            await viewModel.fetchServices()
+        .onAppear {
+            viewModel.fetchServices()
         }
     }
 }

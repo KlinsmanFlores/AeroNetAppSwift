@@ -1,71 +1,84 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class InvoicesViewModel: ObservableObject {
     @Published var invoices: [Invoice] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     @Published var successMessage: String? = nil
     
-    func fetchInvoices() async {
-        isLoading = true
-        errorMessage = nil
-        successMessage = nil
-        do {
-            self.invoices = try await InvoiceService.shared.fetchAll()
-        } catch {
-            errorMessage = "Error al obtener facturas: \(error.localizedDescription)"
-        }
-        isLoading = false
-    }
-    
-    func generateMonthlyInvoices(period: String) async -> Bool {
-        isLoading = true
-        errorMessage = nil
-        successMessage = nil
-        do {
-            let response = try await InvoiceService.shared.generateMonthly(period: period)
-            successMessage = "Facturas generadas: \(response.count ?? 0). \(response.message ?? "")"
-            await fetchInvoices()
-            isLoading = false
-            return true
-        } catch {
-            errorMessage = "Error al generar facturas: \(error.localizedDescription)"
-            isLoading = false
-            return false
+    func fetchInvoices() {
+        self.isLoading = true
+        self.errorMessage = nil
+        self.successMessage = nil
+        InvoiceService.shared.fetchAll { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetched):
+                    self.invoices = fetched
+                case .failure(let error):
+                    self.errorMessage = "Error al obtener facturas: \(error.localizedDescription)"
+                }
+                self.isLoading = false
+            }
         }
     }
     
-    func forceBillingInvoices() async -> Bool {
-        isLoading = true
-        errorMessage = nil
-        successMessage = nil
-        do {
-            let response = try await InvoiceService.shared.forceBilling()
-            successMessage = "Facturación forzada completada: \(response.count ?? 0). \(response.message ?? "")"
-            await fetchInvoices()
-            isLoading = false
-            return true
-        } catch {
-            errorMessage = "Error al forzar facturación: \(error.localizedDescription)"
-            isLoading = false
-            return false
+    func generateMonthlyInvoices(period: String, completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        self.errorMessage = nil
+        self.successMessage = nil
+        InvoiceService.shared.generateMonthly(period: period) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.successMessage = "Facturas generadas: \(response.count ?? 0). \(response.message ?? "")"
+                    self.fetchInvoices()
+                    completion(true)
+                case .failure(let error):
+                    self.errorMessage = "Error al generar facturas: \(error.localizedDescription)"
+                    self.isLoading = false
+                    completion(false)
+                }
+            }
         }
     }
     
-    func deleteInvoice(id: String) async -> Bool {
-        isLoading = true
-        errorMessage = nil
-        do {
-            try await InvoiceService.shared.delete(id: id)
-            await fetchInvoices()
-            isLoading = false
-            return true
-        } catch {
-            errorMessage = "Error al eliminar factura: \(error.localizedDescription)"
-            isLoading = false
-            return false
+    func forceBillingInvoices(completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        self.errorMessage = nil
+        self.successMessage = nil
+        InvoiceService.shared.forceBilling { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.successMessage = "Facturación forzada completada: \(response.count ?? 0). \(response.message ?? "")"
+                    self.fetchInvoices()
+                    completion(true)
+                case .failure(let error):
+                    self.errorMessage = "Error al forzar facturación: \(error.localizedDescription)"
+                    self.isLoading = false
+                    completion(false)
+                }
+            }
+        }
+    }
+    
+    func deleteInvoice(id: String, completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        self.errorMessage = nil
+        InvoiceService.shared.delete(id: id) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.fetchInvoices()
+                    completion(true)
+                case .failure(let error):
+                    self.errorMessage = "Error al eliminar factura: \(error.localizedDescription)"
+                    self.isLoading = false
+                    completion(false)
+                }
+            }
         }
     }
 }

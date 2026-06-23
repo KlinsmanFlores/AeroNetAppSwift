@@ -1,22 +1,25 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class ClientInvoicesViewModel: ObservableObject {
     @Published var invoices: [Invoice] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-    func fetchInvoices() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            let response = try await InvoiceService.shared.fetchMyDebts()
-            // Filtramos las facturas correspondientes
-            self.invoices = response.items ?? []
-        } catch {
-            errorMessage = "Error al obtener tus comprobantes: \(error.localizedDescription)"
+    func fetchInvoices() {
+        self.isLoading = true
+        self.errorMessage = nil
+        
+        InvoiceService.shared.fetchMyDebts { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.invoices = response.items ?? []
+                case .failure(let error):
+                    self.errorMessage = "Error al obtener tus comprobantes: \(error.localizedDescription)"
+                }
+                self.isLoading = false
+            }
         }
-        isLoading = false
     }
 }

@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 // MARK: - Auth Manager (Estado global de autenticación)
-@MainActor
 class AuthManager: ObservableObject {
     @Published var isLoggedIn = false
     @Published var currentUser: User?

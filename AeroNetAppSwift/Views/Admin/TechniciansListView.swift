@@ -68,8 +68,8 @@ struct TechniciansListView: View {
                 }
             }
         }
-        .task {
-            await viewModel.fetchTechnicians()
+        .onAppear {
+            viewModel.fetchTechnicians()
         }
         .sheet(isPresented: $showCreateSheet) {
             NavigationStack {
@@ -115,20 +115,19 @@ struct TechniciansListView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Guardar") {
-                            Task {
-                                let success = await viewModel.createTechnician(
+                                viewModel.createTechnician(
                                     email: newEmail,
                                     password: newPassword,
                                     fullName: newFullName,
                                     phone: newPhone.isEmpty ? nil : newPhone,
                                     docNumber: newDocNumber.isEmpty ? nil : newDocNumber,
                                     specialty: newSpecialty.isEmpty ? nil : newSpecialty
-                                )
-                                if success {
-                                    showCreateSheet = false
-                                    clearFields()
+                                ) { success in
+                                    if success {
+                                        showCreateSheet = false
+                                        clearFields()
+                                    }
                                 }
-                            }
                         }
                         .foregroundColor(Color.theme.accent)
                     }
@@ -140,9 +139,7 @@ struct TechniciansListView: View {
     private func deleteTechnician(at offsets: IndexSet) {
         for index in offsets {
             let tech = viewModel.technicians[index]
-            Task {
-                _ = await viewModel.deleteTechnician(id: tech.id)
-            }
+            viewModel.deleteTechnician(id: tech.id) { _ in }
         }
     }
     

@@ -35,9 +35,7 @@ struct InvoicesListView: View {
                     .buttonStyle(ScaleButtonStyle())
                     
                     Button(action: {
-                        Task {
-                            _ = await viewModel.forceBillingInvoices()
-                        }
+                        viewModel.forceBillingInvoices { _ in }
                     }) {
                         Label("Forzar Proceso", systemName: "play.fill")
                             .font(.system(size: 13, weight: .bold))
@@ -116,17 +114,16 @@ struct InvoicesListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        await viewModel.fetchInvoices()
-                    }
+                    viewModel.fetchInvoices()
+                    
                 }) {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(Color.theme.accent)
                 }
             }
         }
-        .task {
-            await viewModel.fetchInvoices()
+        .onAppear {
+            viewModel.fetchInvoices()
         }
         .sheet(isPresented: $showPeriodSheet) {
             NavigationStack {
@@ -152,14 +149,11 @@ struct InvoicesListView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 30)
                         
-                        Button("Generar Ahora") {
-                            Task {
-                                let success = await viewModel.generateMonthlyInvoices(period: selectedPeriod)
+                            viewModel.generateMonthlyInvoices(period: selectedPeriod) { success in
                                 if success {
                                     showPeriodSheet = false
                                 }
                             }
-                        }
                         .primaryButton()
                         .padding(.horizontal, 30)
                         .padding(.top, 10)
@@ -185,9 +179,7 @@ struct InvoicesListView: View {
     private func deleteInvoice(at offsets: IndexSet) {
         for index in offsets {
             let invoice = viewModel.invoices[index]
-            Task {
-                _ = await viewModel.deleteInvoice(id: invoice.id)
-            }
+            viewModel.deleteInvoice(id: invoice.id) { _ in }
         }
     }
 }

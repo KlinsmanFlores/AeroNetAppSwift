@@ -1,40 +1,47 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class CustomersViewModel: ObservableObject {
     @Published var customers: [Customer] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-    func fetchCustomers() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            self.customers = try await CustomerService.shared.fetchAll()
-        } catch {
-            errorMessage = "Error al listar clientes: \(error.localizedDescription)"
+    func fetchCustomers() {
+        self.isLoading = true
+        self.errorMessage = nil
+        CustomerService.shared.fetchAll { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetched):
+                    self.customers = fetched
+                case .failure(let error):
+                    self.errorMessage = "Error al listar clientes: \(error.localizedDescription)"
+                }
+                self.isLoading = false
+            }
         }
-        isLoading = false
     }
     
-    func updateCustomer(id: String, fullName: String, phone: String, address: String) async -> Bool {
-        isLoading = true
-        errorMessage = nil
+    func updateCustomer(id: String, fullName: String, phone: String, address: String, completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        self.errorMessage = nil
         let data: [String: Any] = [
             "full_name": fullName,
             "phone": phone,
             "address": address
         ]
-        do {
-            _ = try await CustomerService.shared.update(id: id, data: data)
-            await fetchCustomers()
-            isLoading = false
-            return true
-        } catch {
-            errorMessage = "Error al actualizar cliente: \(error.localizedDescription)"
-            isLoading = false
-            return false
+        CustomerService.shared.update(id: id, data: data) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.fetchCustomers()
+                    completion(true)
+                case .failure(let error):
+                    self.errorMessage = "Error al actualizar cliente: \(error.localizedDescription)"
+                    self.isLoading = false
+                    completion(false)
+                }
+            }
         }
     }
 }

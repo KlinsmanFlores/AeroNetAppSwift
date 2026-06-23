@@ -1,26 +1,30 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class TicketsViewModel: ObservableObject {
     @Published var tickets: [Ticket] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
     
-    func fetchTickets() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            self.tickets = try await TicketService.shared.fetchAll()
-        } catch {
-            errorMessage = "Error al obtener tickets: \(error.localizedDescription)"
+    func fetchTickets() {
+        self.isLoading = true
+        self.errorMessage = nil
+        TicketService.shared.fetchAll { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetched):
+                    self.tickets = fetched
+                case .failure(let error):
+                    self.errorMessage = "Error al obtener tickets: \(error.localizedDescription)"
+                }
+                self.isLoading = false
+            }
         }
-        isLoading = false
     }
     
-    func updateTicket(id: String, status: String, technicianId: String?, priority: String) async -> Bool {
-        isLoading = true
-        errorMessage = nil
+    func updateTicket(id: String, status: String, technicianId: String?, priority: String, completion: @escaping (Bool) -> Void) {
+        self.isLoading = true
+        self.errorMessage = nil
         
         var data: [String: Any] = [
             "status": status,
@@ -33,15 +37,18 @@ class TicketsViewModel: ObservableObject {
             data["technician_id"] = NSNull() // Para desasignar
         }
         
-        do {
-            _ = try await TicketService.shared.update(id: id, data: data)
-            await fetchTickets()
-            isLoading = false
-            return true
-        } catch {
-            errorMessage = "Error al actualizar ticket: \(error.localizedDescription)"
-            isLoading = false
-            return false
+        TicketService.shared.update(id: id, data: data) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.fetchTickets()
+                    completion(true)
+                case .failure(let error):
+                    self.errorMessage = "Error al actualizar ticket: \(error.localizedDescription)"
+                    self.isLoading = false
+                    completion(false)
+                }
+            }
         }
     }
 }

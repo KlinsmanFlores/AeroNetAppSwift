@@ -94,9 +94,8 @@ struct SignupView: View {
                             }
                             
                             Button(action: {
-                                Task {
-                                    await viewModel.signup(authManager: authManager)
-                                }
+                                viewModel.signup(authManager: authManager)
+                                
                             }) {
                                 if viewModel.isLoading {
                                     ProgressView()

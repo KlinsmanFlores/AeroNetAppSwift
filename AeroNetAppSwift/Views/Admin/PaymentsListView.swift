@@ -54,17 +54,16 @@ struct PaymentsListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    Task {
-                        await viewModel.fetchPayments()
-                    }
+                    viewModel.fetchPayments()
+                    
                 }) {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(Color.theme.accent)
                 }
             }
         }
-        .task {
-            await viewModel.fetchPayments()
+        .onAppear {
+            viewModel.fetchPayments()
         }
     }
 }

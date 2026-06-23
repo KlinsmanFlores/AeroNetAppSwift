@@ -73,9 +73,8 @@ struct ClientTicketsView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
                     Button(action: {
-                        Task {
-                            await viewModel.fetchTickets()
-                        }
+                        viewModel.fetchTickets()
+                        
                     }) {
                         Image(systemName: "arrow.clockwise")
                             .foregroundColor(Color.theme.accent)
@@ -83,11 +82,13 @@ struct ClientTicketsView: View {
                     
                     Button(action: {
                         showCreateSheet = true
-                        Task {
-                            if let services = try? await ServiceService.shared.fetchMyServices() {
-                                myServicesList = services
-                                if let first = services.first {
-                                    selectedServiceId = first.id
+                        ServiceService.shared.fetchMyServices { result in
+                            DispatchQueue.main.async {
+                                if case .success(let services) = result {
+                                    myServicesList = services
+                                    if let first = services.first {
+                                        selectedServiceId = first.id
+                                    }
                                 }
                             }
                         }
@@ -98,8 +99,8 @@ struct ClientTicketsView: View {
                 }
             }
         }
-        .task {
-            await viewModel.fetchTickets()
+        .onAppear {
+            viewModel.fetchTickets()
         }
         .sheet(isPresented: $showCreateSheet) {
             NavigationStack {
@@ -157,21 +158,20 @@ struct ClientTicketsView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Enviar") {
-                            Task {
                                 let serviceIdParam: String? = selectedServiceId.isEmpty ? nil : selectedServiceId
-                                let success = await viewModel.createTicket(
+                                viewModel.createTicket(
                                     serviceId: serviceIdParam,
                                     type: selectedType,
                                     subject: newSubject,
                                     description: newDescription,
                                     priority: selectedPriority,
                                     category: selectedType
-                                )
-                                if success {
-                                    showCreateSheet = false
-                                    clearFields()
+                                ) { success in
+                                    if success {
+                                        showCreateSheet = false
+                                        clearFields()
+                                    }
                                 }
-                            }
                         }
                         .foregroundColor(Color.theme.accent)
                     }
