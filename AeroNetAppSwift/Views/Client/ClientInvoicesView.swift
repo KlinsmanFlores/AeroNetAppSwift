@@ -74,7 +74,7 @@ struct ClientInvoicesView: View {
             viewModel.fetchInvoices()
         }
         .sheet(item: $selectedInvoice) { invoice in
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.theme.background
                         .ignoresSafeArea()

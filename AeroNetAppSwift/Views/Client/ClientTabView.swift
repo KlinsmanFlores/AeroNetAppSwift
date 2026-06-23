@@ -5,46 +5,46 @@ struct ClientTabView: View {
     
     var body: some View {
         TabView {
-            NavigationStack {
+            NavigationView {
                 ClientHomeView()
             }
             .tabItem {
-                Label("Inicio", systemName: "house.fill")
+                Label("Inicio", systemImage: "house.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 ClientDebtsView()
             }
             .tabItem {
-                Label("Pagar", systemName: "creditcard.fill")
+                Label("Pagar", systemImage: "creditcard.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 ClientInvoicesView()
             }
             .tabItem {
-                Label("Recibos", systemName: "doc.text.fill")
+                Label("Recibos", systemImage: "doc.text.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 ClientTicketsView()
             }
             .tabItem {
-                Label("Soporte", systemName: "questionmark.circle.fill")
+                Label("Soporte", systemImage: "questionmark.circle.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 ClientPlansView()
             }
             .tabItem {
-                Label("Planes", systemName: "wifi.circle.fill")
+                Label("Planes", systemImage: "wifi.circle.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 ClientProfileView()
             }
             .tabItem {
-                Label("Perfil", systemName: "person.fill")
+                Label("Perfil", systemImage: "person.fill")
             }
         }
         .accentColor(Color.theme.accent)

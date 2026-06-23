@@ -3,12 +3,11 @@ import SwiftUI
 struct SignupView: View {
     @EnvironmentObject var authManager: AuthManager
     @StateObject private var viewModel = SignupViewModel()
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom],
+            LinearGradient(gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -112,7 +111,7 @@ struct SignupView: View {
                     .padding(.horizontal, 20)
                     
                     Button(action: {
-                        dismiss()
+                        presentationMode.wrappedValue.dismiss()
                     }) {
                         HStack {
                             Text("¿Ya tienes una cuenta?")

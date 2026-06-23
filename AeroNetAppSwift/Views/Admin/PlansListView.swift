@@ -85,7 +85,7 @@ struct PlansListView: View {
             viewModel.fetchPlans()
         }
         .sheet(isPresented: $showCreateSheet) {
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.theme.background
                         .ignoresSafeArea()

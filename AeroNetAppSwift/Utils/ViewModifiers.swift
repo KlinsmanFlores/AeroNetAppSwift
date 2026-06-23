@@ -10,7 +10,7 @@ struct GlassCardModifier: ViewModifier {
                     .fill(Color.theme.cardBackground)
                     .background(
                         RoundedRectangle(cornerRadius: cornerRadius)
-                            .fill(.ultraThinMaterial)
+                            .fill(Color.black.opacity(0.8))
                     )
             )
             .overlay(
@@ -35,8 +35,7 @@ struct ShimmerModifier: ViewModifier {
         content
             .overlay(
                 GeometryReader { geo in
-                    LinearGradient(
-                        colors: [.clear, Color.white.opacity(0.3), .clear],
+                    LinearGradient(gradient: Gradient(colors: [.clear, Color.white.opacity(0.3), .clear]),
                         startPoint: .leading,
                         endPoint: .trailing
                     )
@@ -103,7 +102,7 @@ struct SectionHeaderModifier: ViewModifier {
             .font(.system(size: 14, weight: .semibold))
             .foregroundColor(Color.theme.textSecondary)
             .textCase(.uppercase)
-            .tracking(1.2)
+            .kerning(1.2)
     }
 }
 

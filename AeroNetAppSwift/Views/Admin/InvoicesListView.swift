@@ -20,7 +20,7 @@ struct InvoicesListView: View {
                         selectedPeriod = formatter.string(from: today)
                         showPeriodSheet = true
                     }) {
-                        Label("Facturar Mes", systemName: "doc.badge.plus")
+                        Label("Facturar Mes", systemImage: "doc.badge.plus")
                             .font(.system(size: 13, weight: .bold))
                             .padding(.vertical, 10)
                             .padding(.horizontal, 12)
@@ -37,7 +37,7 @@ struct InvoicesListView: View {
                     Button(action: {
                         viewModel.forceBillingInvoices { _ in }
                     }) {
-                        Label("Forzar Proceso", systemName: "play.fill")
+                        Label("Forzar Proceso", systemImage: "play.fill")
                             .font(.system(size: 13, weight: .bold))
                             .padding(.vertical, 10)
                             .padding(.horizontal, 12)
@@ -126,7 +126,7 @@ struct InvoicesListView: View {
             viewModel.fetchInvoices()
         }
         .sheet(isPresented: $showPeriodSheet) {
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.theme.background
                         .ignoresSafeArea()

@@ -10,7 +10,7 @@ struct Invoice: Codable, Identifiable {
     let issue_date: String?
     let payment_link: String?
     let created_at: String?
-    let service: InvoiceService?
+    let service: InvoiceServiceModel?
     
     var displayTotal: String { (total ?? 0).currencyPEN }
     var statusLabel: String {
@@ -25,7 +25,7 @@ struct Invoice: Codable, Identifiable {
     var dueDate: Date? { Date.fromISO(due_date) }
 }
 
-struct InvoiceService: Codable {
+struct InvoiceServiceModel: Codable {
     let address_text: String?
     let plan: Plan?
     let customer: Customer?

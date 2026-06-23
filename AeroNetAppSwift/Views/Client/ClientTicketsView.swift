@@ -45,7 +45,7 @@ struct ClientTicketsView: View {
                                     .lineLimit(2)
                                 
                                 HStack {
-                                    Label("Prioridad: \(ticket.priorityLabel)", systemName: "flag.fill")
+                                    Label("Prioridad: \(ticket.priorityLabel)", systemImage: "flag.fill")
                                         .font(.caption)
                                         .foregroundColor(priorityColor(ticket.priority))
                                     
@@ -103,7 +103,7 @@ struct ClientTicketsView: View {
             viewModel.fetchTickets()
         }
         .sheet(isPresented: $showCreateSheet) {
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.theme.background
                         .ignoresSafeArea()

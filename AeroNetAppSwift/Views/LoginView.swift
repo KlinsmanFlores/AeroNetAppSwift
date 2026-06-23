@@ -5,11 +5,10 @@ struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ZStack {
                 // Fondo Degradado
-                LinearGradient(
-                    colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom],
+                LinearGradient(gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -34,7 +33,7 @@ struct LoginView: View {
                             Text("AeroNet")
                                 .font(.system(size: 38, weight: .bold, design: .rounded))
                                 .foregroundColor(Color.theme.textPrimary)
-                                .tracking(3)
+                                .kerning(3)
                             
                             Text("Conectividad veloz y confiable")
                                 .font(.system(size: 15))
@@ -47,7 +46,7 @@ struct LoginView: View {
                                 Text("INICIAR SESIÓN")
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(Color.theme.textPrimary)
-                                    .tracking(1.5)
+                                    .kerning(1.5)
                                     .padding(.bottom, 5)
                                 
                                 // Correo

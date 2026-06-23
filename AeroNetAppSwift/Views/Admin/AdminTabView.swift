@@ -5,60 +5,60 @@ struct AdminTabView: View {
     
     var body: some View {
         TabView {
-            NavigationStack {
+            NavigationView {
                 DashboardView()
             }
             .tabItem {
-                Label("Dashboard", systemName: "chart.bar.xaxis")
+                Label("Dashboard", systemImage: "chart.bar.xaxis")
             }
             
-            NavigationStack {
+            NavigationView {
                 CustomersListView()
             }
             .tabItem {
-                Label("Clientes", systemName: "person.3.fill")
+                Label("Clientes", systemImage: "person.3.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 PlansListView()
             }
             .tabItem {
-                Label("Planes", systemName: "wifi.circle.fill")
+                Label("Planes", systemImage: "wifi.circle.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 ServicesListView()
             }
             .tabItem {
-                Label("Servicios", systemName: "network")
+                Label("Servicios", systemImage: "network")
             }
             
-            NavigationStack {
+            NavigationView {
                 InvoicesListView()
             }
             .tabItem {
-                Label("Facturas", systemName: "doc.text.fill")
+                Label("Facturas", systemImage: "doc.text.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 PaymentsListView()
             }
             .tabItem {
-                Label("Pagos", systemName: "creditcard.fill")
+                Label("Pagos", systemImage: "creditcard.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 TicketsListView()
             }
             .tabItem {
-                Label("Tickets", systemName: "lifepreserver.fill")
+                Label("Tickets", systemImage: "lifepreserver.fill")
             }
             
-            NavigationStack {
+            NavigationView {
                 TechniciansListView()
             }
             .tabItem {
-                Label("Técnicos", systemName: "wrench.and.screwdriver.fill")
+                Label("Técnicos", systemImage: "wrench.and.screwdriver.fill")
             }
         }
         .accentColor(Color.theme.accent)

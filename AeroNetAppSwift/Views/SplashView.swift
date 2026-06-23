@@ -8,8 +8,7 @@ struct SplashView: View {
     var body: some View {
         ZStack {
             // Fondo degradado Dark Teal Premium
-            LinearGradient(
-                colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom],
+            LinearGradient(gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -31,12 +30,12 @@ struct SplashView: View {
                 Text("AERONTET")
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundColor(Color.theme.textPrimary)
-                    .tracking(4)
+                    .kerning(4)
                 
                 Text("Internet Satelital & Fibra Óptica")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(Color.theme.textSecondary)
-                    .tracking(1)
+                    .kerning(1)
             }
             .scaleEffect(scale)
             .opacity(opacity)

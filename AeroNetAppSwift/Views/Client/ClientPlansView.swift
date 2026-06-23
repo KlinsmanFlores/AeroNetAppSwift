@@ -114,7 +114,7 @@ struct ClientPlansView: View {
             viewModel.fetchPlans()
         }
         .sheet(item: $selectedPlan) { plan in
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.theme.background
                         .ignoresSafeArea()

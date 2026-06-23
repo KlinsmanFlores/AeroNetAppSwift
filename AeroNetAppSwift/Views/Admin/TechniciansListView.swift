@@ -37,7 +37,7 @@ struct TechniciansListView: View {
                                 
                                 HStack {
                                     if let phone = tech.phone, !phone.isEmpty {
-                                        Label(phone, systemName: "phone.fill")
+                                        Label(phone, systemImage: "phone.fill")
                                             .font(.caption)
                                             .foregroundColor(.gray)
                                     }
@@ -72,7 +72,7 @@ struct TechniciansListView: View {
             viewModel.fetchTechnicians()
         }
         .sheet(isPresented: $showCreateSheet) {
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.theme.background
                         .ignoresSafeArea()

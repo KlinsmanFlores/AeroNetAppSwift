@@ -34,7 +34,7 @@ struct CustomersListView: View {
                                 
                                 HStack {
                                     if let phone = customer.phone, !phone.isEmpty {
-                                        Label(phone, systemName: "phone.fill")
+                                        Label(phone, systemImage: "phone.fill")
                                             .font(.caption)
                                             .foregroundColor(Color.theme.accent)
                                     }
@@ -75,7 +75,7 @@ struct CustomersListView: View {
             viewModel.fetchCustomers()
         }
         .sheet(item: $selectedCustomer) { customer in
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.theme.background
                         .ignoresSafeArea()

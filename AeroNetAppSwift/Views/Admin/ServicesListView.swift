@@ -34,8 +34,7 @@ struct ServicesListView: View {
                                 
                                 HStack {
                                     Label(
-                                        "Plan: \(service.plan?.name ?? "N/A") (\(Int(service.plan?.speed_mbps ?? 0)) Mbps)",
-                                        systemName: "wifi"
+                                        "Plan: \(service.plan?.name ?? "N/A") (\(Int(service.plan?.speed_mbps ?? 0)) Mbps)", systemImage: "wifi"
                                     )
                                     .font(.caption)
                                     .foregroundColor(Color.theme.accent)

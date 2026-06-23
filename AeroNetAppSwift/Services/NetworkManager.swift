@@ -23,7 +23,7 @@ enum NetworkError: LocalizedError {
     }
 }
 
-// MARK: - Network Manager (Semana 13 — async/await)
+// MARK: - Network Manager
 class NetworkManager {
     static let shared = NetworkManager()
     
@@ -32,11 +32,35 @@ class NetworkManager {
     
     private init() {}
     
-    // MARK: - Generic Request
+    // MARK: - Request without Body
     func request<T: Decodable>(
         endpoint: String,
         method: String = "GET",
-        body: Encodable? = nil,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
+        performRequest(endpoint: endpoint, method: method, bodyData: nil, completion: completion)
+    }
+    
+    // MARK: - Request with Encodable Body
+    func request<T: Decodable, E: Encodable>(
+        endpoint: String,
+        method: String = "POST",
+        body: E,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
+        do {
+            let bodyData = try JSONEncoder().encode(body)
+            performRequest(endpoint: endpoint, method: method, bodyData: bodyData, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+    
+    // MARK: - Internal Request Execution
+    private func performRequest<T: Decodable>(
+        endpoint: String,
+        method: String,
+        bodyData: Data?,
         completion: @escaping (Result<T, Error>) -> Void
     ) {
         guard let url = URL(string: baseURL + endpoint) else {
@@ -52,13 +76,8 @@ class NetworkManager {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
-        if let body = body {
-            do {
-                request.httpBody = try JSONEncoder().encode(body)
-            } catch {
-                completion(.failure(error))
-                return
-            }
+        if let data = bodyData {
+            request.httpBody = data
         }
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -80,8 +99,7 @@ class NetworkManager {
             switch httpResponse.statusCode {
             case 200...299:
                 do {
-                    let decoder = JSONDecoder()
-                    let result = try decoder.decode(T.self, from: data)
+                    let result = try JSONDecoder().decode(T.self, from: data)
                     completion(.success(result))
                 } catch {
                     completion(.failure(NetworkError.decodingError(error)))
@@ -98,11 +116,10 @@ class NetworkManager {
         }.resume()
     }
     
-    // MARK: - Request sin respuesta tipada (para DELETE, etc)
+    // MARK: - Request without typed response (for DELETE)
     func requestVoid(
         endpoint: String,
         method: String = "DELETE",
-        body: Encodable? = nil,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
         guard let url = URL(string: baseURL + endpoint) else {
@@ -116,15 +133,6 @@ class NetworkManager {
         
         if let token = UserDefaults.standard.string(forKey: "access_token") {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
-        
-        if let body = body {
-            do {
-                request.httpBody = try JSONEncoder().encode(body)
-            } catch {
-                completion(.failure(error))
-                return
-            }
         }
         
         URLSession.shared.dataTask(with: request) { _, response, error in
@@ -144,7 +152,7 @@ class NetworkManager {
         }.resume()
     }
     
-    // MARK: - POST con body dict genérico
+    // MARK: - POST with Dict Body
     func postJSON<T: Decodable>(
         endpoint: String,
         json: [String: Any],
@@ -153,7 +161,7 @@ class NetworkManager {
         requestJSON(endpoint: endpoint, method: "POST", json: json, completion: completion)
     }
     
-    // MARK: - JSON Request with method (POST, PATCH, etc)
+    // MARK: - JSON Request
     func requestJSON<T: Decodable>(
         endpoint: String,
         method: String,
