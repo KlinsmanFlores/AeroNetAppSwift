@@ -102,6 +102,7 @@ class NetworkManager {
                     let result = try JSONDecoder().decode(T.self, from: data)
                     completion(.success(result))
                 } catch {
+                    print("DECODING ERROR at \(endpoint): \(error)")
                     completion(.failure(NetworkError.decodingError(error)))
                 }
             case 401:
@@ -216,6 +217,7 @@ class NetworkManager {
                 let result = try JSONDecoder().decode(T.self, from: data)
                 completion(.success(result))
             } catch {
+                print("DECODING ERROR at \(endpoint): \(error)")
                 completion(.failure(NetworkError.decodingError(error)))
             }
         }.resume()

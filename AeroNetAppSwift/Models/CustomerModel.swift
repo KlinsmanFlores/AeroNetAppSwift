@@ -1,7 +1,7 @@
 import Foundation
 
 struct Customer: Codable, Identifiable {
-    let id: String
+    let id: String?
     let user_id: String?
     let full_name: String?
     let email: String?

@@ -1,7 +1,7 @@
 import Foundation
 
 struct Plan: Codable, Identifiable {
-    let id: String
+    let id: String?
     let name: String?
     let price: Double?
     let speed_mbps: Double?

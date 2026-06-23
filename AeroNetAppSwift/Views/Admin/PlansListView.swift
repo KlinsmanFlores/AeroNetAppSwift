@@ -10,8 +10,12 @@ struct PlansListView: View {
     
     var body: some View {
         ZStack {
-            Color.theme.background
-                .ignoresSafeArea()
+            LinearGradient(
+                gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
             VStack {
                 if viewModel.isLoading && viewModel.plans.isEmpty {
