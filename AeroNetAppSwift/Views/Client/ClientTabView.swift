@@ -37,7 +37,7 @@ struct ClientTabView: View {
                 ClientPlansView()
             }
             .tabItem {
-                Label("Planes", systemImage: "wifi.circle.fill")
+                Label("Planes", systemImage: "wifi")
             }
             
             NavigationView {

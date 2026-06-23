@@ -4,6 +4,7 @@ struct SplashView: View {
     @State private var scale: CGFloat = 0.6
     @State private var opacity: Double = 0.0
     @State private var rotation: Double = -45
+    @State private var isAnimating: Bool = false
     
     var body: some View {
         ZStack {
@@ -18,16 +19,21 @@ struct SplashView: View {
                 // Logo AeroNet Animado (Semana 14)
                 ZStack {
                     Circle()
-                        .stroke(Color.theme.accent.opacity(0.3), lineWidth: 4)
+                        .fill(Color.theme.accent.opacity(0.2))
                         .frame(width: 120, height: 120)
+                        .scaleEffect(isAnimating ? 1.2 : 1.0)
+                        .opacity(isAnimating ? 0.0 : 1.0)
                     
-                    Image(systemName: "wifi.router.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(Color.theme.accent)
-                        .rotationEffect(.degrees(rotation))
+                    Circle()
+                        .fill(Color.theme.accent)
+                        .frame(width: 80, height: 80)
+                    
+                    Image(systemName: "wifi")
+                        .font(.system(size: 40, weight: .bold))
+                        .foregroundColor(Color.theme.backgroundGradientBottom)
                 }
                 
-                Text("AERONTET")
+                Text("AERONET")
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundColor(Color.theme.textPrimary)
                     .kerning(4)
@@ -43,6 +49,12 @@ struct SplashView: View {
                 withAnimation(.easeOut(duration: 1.2)) {
                     self.scale = 1.0
                     self.opacity = 1.0
+                }
+                withAnimation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: false)) {
+                    isAnimating = true
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     self.rotation = 0
                 }
             }

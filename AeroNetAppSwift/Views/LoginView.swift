@@ -24,9 +24,9 @@ struct LoginView: View {
                                     .fill(Color.theme.accent.opacity(0.1))
                                     .frame(width: 80, height: 80)
                                 
-                                Image(systemName: "wifi.router.fill")
-                                    .font(.system(size: 38))
-                                    .foregroundColor(Color.theme.accent)
+                                Image(systemName: "wifi")
+                                    .font(.system(size: 40, weight: .bold))
+                                    .foregroundColor(Color.theme.backgroundGradientBottom)
                             }
                             .padding(.top, 50)
                             

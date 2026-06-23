@@ -29,8 +29,10 @@ struct ClientTicketsView: View {
                     )
                 } else {
                     ticketsList
+                        .transition(.opacity)
                 }
             }
+            .animation(.spring(), value: viewModel.tickets.count)
         }
         .navigationTitle("Soporte Técnico")
         .navigationBarTitleDisplayMode(.inline)

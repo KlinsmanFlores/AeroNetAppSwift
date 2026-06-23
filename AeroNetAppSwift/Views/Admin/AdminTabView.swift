@@ -23,7 +23,7 @@ struct AdminTabView: View {
                 PlansListView()
             }
             .tabItem {
-                Label("Planes", systemImage: "wifi.circle.fill")
+                Label("Planes", systemImage: "wifi")
             }
             
             NavigationView {

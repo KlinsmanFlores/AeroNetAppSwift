@@ -65,6 +65,7 @@ struct PlansListView: View {
                     }
                     .listStyle(PlainListStyle())
                     .background(Color.clear)
+                    .animation(.spring())
                 }
             }
         }

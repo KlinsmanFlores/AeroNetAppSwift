@@ -6,26 +6,26 @@ extension Color {
 }
 
 struct ColorTheme {
-    // Fondos principales
-    let background = Color(hex: "#09244A")
-    let backgroundGradientTop = Color(hex: "#051632")
-    let backgroundGradientBottom = Color(hex: "#15447C")
-    let surfaceDark = Color(hex: "#0D2B52")
+    // Fondos principales (Inspirados en la imagen Pinterest)
+    let background = Color(hex: "#0055FF")
+    let backgroundGradientTop = Color(hex: "#00D2FF") // Cyan vibrante brillante
+    let backgroundGradientBottom = Color(hex: "#002B99") // Azul oscuro profundo
+    let surfaceDark = Color.white.opacity(0.15)
     
-    // Acento principal (Teal brillante)
-    let accent = Color(hex: "#00D2A0")
-    let accentGold = Color(hex: "#00D2A0")
-    let accentLight = Color(hex: "#00E5B0")
+    // Acento principal (Blanco para resaltar sobre el azul)
+    let accent = Color.white
+    let accentGold = Color.white
+    let accentLight = Color.white.opacity(0.8)
     
     // Texto
     let textPrimary = Color.white
-    let textSecondary = Color(hex: "#8CB3D9")
-    let textMuted = Color(hex: "#5A7DA0")
+    let textSecondary = Color.white.opacity(0.85)
+    let textMuted = Color.white.opacity(0.65)
     
     // Superficies glass
-    let surface = Color.white.opacity(0.1)
-    let surfaceLight = Color.white.opacity(0.05)
-    let glassBorder = Color.white.opacity(0.15)
+    let surface = Color.white.opacity(0.25)
+    let surfaceLight = Color.white.opacity(0.15)
+    let glassBorder = Color.white.opacity(0.4)
     
     // Estados / Badges
     let success = Color(hex: "#10B981")
@@ -38,11 +38,11 @@ struct ColorTheme {
     let infoBg = Color(hex: "#6366F1").opacity(0.2)
     
     // Cards
-    let cardBackground = Color.white.opacity(0.08)
-    let cardBorder = Color.white.opacity(0.12)
+    let cardBackground = Color.white.opacity(0.15)
+    let cardBorder = Color.white.opacity(0.3)
     
     // Tab bar
-    let tabBarBg = Color(hex: "#061E3C")
+    let tabBarBg = Color(hex: "#001A66")
 }
 
 // MARK: - Hex Color Init
