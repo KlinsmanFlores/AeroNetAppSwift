@@ -6,6 +6,31 @@ struct InvoicesListView: View {
     @State private var selectedPeriod = ""
     
     var body: some View {
+        mainContent
+            .navigationTitle("Facturación & Deudas")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        viewModel.fetchInvoices()
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundColor(Color.theme.accent)
+                    }
+                }
+            }
+            .onAppear {
+                viewModel.fetchInvoices()
+            }
+            .sheet(isPresented: $showPeriodSheet) {
+                periodSheetContent
+            }
+            .sheet(isPresented: $viewModel.showDocViewer) {
+                docViewerSheetContent
+            }
+    }
+    
+    private var mainContent: some View {
         ZStack {
             LinearGradient(
                 gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
@@ -15,10 +40,9 @@ struct InvoicesListView: View {
             .ignoresSafeArea()
             
             VStack {
-                // Botones de acción masiva
                 actionButtons
-                .padding(.horizontal, 16)
-                .padding(.top, 10)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 10)
                 
                 if let success = viewModel.successMessage {
                     Text(success)
@@ -41,94 +65,80 @@ struct InvoicesListView: View {
                 }
             }
         }
-        .navigationTitle("Facturación & Deudas")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    viewModel.fetchInvoices()
+    }
+    
+    private var periodSheetContent: some View {
+        NavigationView {
+            ZStack {
+                Color.theme.background
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 20) {
+                    Text("Generar Facturas Mensuales")
+                        .font(.headline)
+                        .foregroundColor(.black)
                     
-                }) {
-                    Image(systemName: "arrow.clockwise")
-                        .foregroundColor(Color.theme.accent)
-                }
-            }
-        }
-        .onAppear {
-            viewModel.fetchInvoices()
-        }
-        .sheet(isPresented: $showPeriodSheet) {
-            NavigationView {
-                ZStack {
-                    Color.theme.background
-                        .ignoresSafeArea()
+                    Text("Ingrese el periodo en formato AAAA-MM (Ej. 2026-06):")
+                        .font(.subheadline)
+                        .foregroundColor(Color.theme.textMuted)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
                     
-                    VStack(spacing: 20) {
-                        Text("Generar Facturas Mensuales")
-                            .font(.headline)
-                            .foregroundColor(.black)
-                        
-                        Text("Ingrese el periodo en formato AAAA-MM (Ej. 2026-06):")
-                            .font(.subheadline)
-                            .foregroundColor(Color.theme.textMuted)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 20)
-                        
-                        TextField("Periodo", text: $selectedPeriod)
-                            .padding()
-                            .background(Color.theme.surface)
-                            .cornerRadius(12)
-                            .foregroundColor(.black)
-                            .padding(.horizontal, 30)
-                        
-                        Button("Generar") {
-                            viewModel.generateMonthlyInvoices(period: selectedPeriod) { success in
-                                if success {
-                                    showPeriodSheet = false
-                                }
+                    TextField("Periodo", text: $selectedPeriod)
+                        .padding()
+                        .background(Color.theme.surface)
+                        .cornerRadius(12)
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 30)
+                    
+                    Button("Generar") {
+                        viewModel.generateMonthlyInvoices(period: selectedPeriod) { success in
+                            if success {
+                                showPeriodSheet = false
                             }
                         }
-                        .primaryButton()
-                        .padding(.horizontal, 30)
-                        .padding(.top, 10)
-                        
-                        Spacer()
                     }
-                    .padding(.top, 30)
+                    .primaryButton()
+                    .padding(.horizontal, 30)
+                    .padding(.top, 10)
+                    
+                    Spacer()
                 }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Cancelar") {
-                            showPeriodSheet = false
-                        }
-                        .foregroundColor(.red)
+                .padding(.top, 30)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancelar") {
+                        showPeriodSheet = false
                     }
+                    .foregroundColor(.red)
                 }
             }
         }
-        .sheet(isPresented: $viewModel.showDocViewer) {
-            NavigationView {
-                ZStack {
-                    Color.theme.background
-                        .ignoresSafeArea()
-                    
-                    if let url = viewModel.activeWebUrl {
-                        WebViewRepresentable(url: url)
-                            .edgesIgnoringSafeArea(.all)
-                    } else {
-                        EmptyStateView(iconName: "doc.text.fill", title: "Error", message: "No se pudo recuperar el enlace de Nubefact.")
-                    }
+    }
+    
+    private var docViewerSheetContent: some View {
+        NavigationView {
+            ZStack {
+                Color.theme.background
+                    .ignoresSafeArea()
+                
+                if let url = viewModel.activeWebUrl {
+                    WebViewRepresentable(url: url)
+                        .edgesIgnoringSafeArea(.all)
+                } else {
+                    EmptyStateView(iconName: "doc.text.fill", title: "Error", message: "No se pudo recuperar el enlace de Nubefact.")
                 }
-                .navigationTitle(viewModel.activeDocTitle)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Cerrar") {
-                            viewModel.showDocViewer = false
-                        }
-                        .foregroundColor(Color.theme.accent)
+            }
+            .navigationTitle(viewModel.activeDocTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cerrar") {
+                        viewModel.showDocViewer = false
                     }
+                    .foregroundColor(Color.theme.accent)
                 }
             }
         }
