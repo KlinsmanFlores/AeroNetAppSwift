@@ -6,7 +6,7 @@ struct ClientTicketsView: View {
     @State private var newSubject = ""
     @State private var newDescription = ""
     @State private var selectedPriority = "medium"
-    @State private var selectedType = "support" // support or technical
+    @State private var selectedCategory = "RECLAMO"
     @State private var selectedServiceId = ""
     @State private var myServicesList: [ServiceModel] = []
     
@@ -92,10 +92,12 @@ struct ClientTicketsView: View {
                         .listRowBackground(Color.theme.surface)
                         
                         Section(header: Text("Detalles de Solicitud").foregroundColor(.gray)) {
-                            Picker("Tipo de Ticket", selection: $selectedType) {
-                                Text("Soporte Técnico").tag("technical")
-                                Text("Administrativo / Facturación").tag("administrative")
-                                Text("General").tag("support")
+                            Picker("Categoría del Problema", selection: $selectedCategory) {
+                                Text("Reclamo o Avería").tag("RECLAMO")
+                                Text("Problemas de Cobertura Wi-Fi").tag("COBERTURA_WIFI")
+                                Text("Traslado de Domicilio").tag("TRASLADO")
+                                Text("Mejorar mi Plan").tag("MEJORA_PLAN")
+                                Text("Pausar por Vacaciones").tag("PAUSA_VACACIONES")
                             }
                             .foregroundColor(.white)
                             
@@ -131,11 +133,11 @@ struct ClientTicketsView: View {
                                 let serviceIdParam: String? = selectedServiceId.isEmpty ? nil : selectedServiceId
                                 viewModel.createTicket(
                                     serviceId: serviceIdParam,
-                                    type: selectedType,
+                                    type: "ticket",
                                     subject: newSubject,
                                     description: newDescription,
                                     priority: selectedPriority,
-                                    category: selectedType
+                                    category: selectedCategory
                                 ) { success in
                                     if success {
                                         showCreateSheet = false
@@ -172,6 +174,14 @@ struct ClientTicketsView: View {
                 BadgeView(text: ticket.statusLabel, status: ticket.status ?? "open")
             }
             
+            Text(translateCategory(ticket.category))
+                .font(.system(size: 11, weight: .semibold))
+                .padding(.horizontal, 6)
+                .padding(.vertical, 3)
+                .background(Color.theme.accent.opacity(0.2))
+                .foregroundColor(Color.theme.accent)
+                .cornerRadius(4)
+            
             Text(ticket.description ?? "Sin descripción")
                 .font(.system(size: 13))
                 .foregroundColor(.gray)
@@ -202,11 +212,22 @@ struct ClientTicketsView: View {
         }
     }
     
+    private func translateCategory(_ cat: String?) -> String {
+        switch cat {
+        case "RECLAMO": return "Reclamo o Avería"
+        case "COBERTURA_WIFI": return "Problemas de Cobertura Wi-Fi"
+        case "PAUSA_VACACIONES": return "Pausar por Vacaciones"
+        case "MEJORA_PLAN": return "Mejorar mi Plan"
+        case "TRASLADO": return "Traslado de Domicilio"
+        default: return cat ?? "General"
+        }
+    }
+    
     private func clearFields() {
         newSubject = ""
         newDescription = ""
         selectedPriority = "medium"
-        selectedType = "support"
+        selectedCategory = "RECLAMO"
         selectedServiceId = ""
     }
 }

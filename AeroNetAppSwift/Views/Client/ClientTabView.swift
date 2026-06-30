@@ -27,17 +27,17 @@ struct ClientTabView: View {
             }
             
             NavigationView {
-                ClientTicketsView()
-            }
-            .tabItem {
-                Label("Soporte", systemImage: "questionmark.circle.fill")
-            }
-            
-            NavigationView {
                 ClientPlansView()
             }
             .tabItem {
                 Label("Planes", systemImage: "wifi")
+            }
+            
+            NavigationView {
+                ClientTicketsView()
+            }
+            .tabItem {
+                Label("Soporte", systemImage: "questionmark.circle.fill")
             }
             
             NavigationView {
