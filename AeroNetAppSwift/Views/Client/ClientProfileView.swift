@@ -38,7 +38,7 @@ struct ClientProfileView: View {
                         
                         Text(authManager.currentUser?.email ?? "Sin correo")
                             .font(.system(size: 14))
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color.theme.textMuted)
                     }
                     
                     if viewModel.isLoading {
@@ -57,7 +57,7 @@ struct ClientProfileView: View {
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text("Nombre Completo")
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color.theme.textMuted)
                                     TextField("Tu nombre", text: $editName)
                                         .foregroundColor(.white)
                                         .padding(.vertical, 8)
@@ -70,7 +70,7 @@ struct ClientProfileView: View {
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text("Teléfono")
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color.theme.textMuted)
                                     TextField("Tu teléfono", text: $editPhone)
                                         .foregroundColor(.white)
                                         .padding(.vertical, 8)
@@ -83,7 +83,7 @@ struct ClientProfileView: View {
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text("Tipo de Documento")
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color.theme.textMuted)
                                     Picker("Tipo Doc", selection: $editDocType) {
                                         Text("DNI").tag("DNI")
                                         Text("RUC").tag("RUC")
@@ -98,7 +98,7 @@ struct ClientProfileView: View {
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text("Número de Documento")
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color.theme.textMuted)
                                     TextField("Nº de documento", text: $editDocNumber)
                                         .foregroundColor(.white)
                                         .padding(.vertical, 8)

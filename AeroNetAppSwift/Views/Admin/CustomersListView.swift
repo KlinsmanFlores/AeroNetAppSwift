@@ -51,7 +51,7 @@ struct CustomersListView: View {
                         .ignoresSafeArea()
                     
                     Form {
-                        Section(header: Text("Información Básica").foregroundColor(.gray)) {
+                        Section(header: Text("Información Básica").foregroundColor(Color.theme.textMuted)) {
                             TextField("Nombre Completo", text: $editName)
                                 .foregroundColor(.white)
                             TextField("Teléfono", text: $editPhone)
@@ -116,7 +116,7 @@ struct CustomersListView: View {
             
             Text(customer.email ?? "Sin email")
                 .font(.system(size: 14))
-                .foregroundColor(.gray)
+                .foregroundColor(Color.theme.textMuted)
             
             HStack {
                 if let phone = customer.phone, !phone.isEmpty {

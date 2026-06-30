@@ -70,7 +70,7 @@ struct InvoicesListView: View {
                         
                         Text("Ingrese el periodo en formato AAAA-MM (Ej. 2026-06):")
                             .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color.theme.textMuted)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 20)
                         
@@ -176,13 +176,13 @@ struct InvoicesListView: View {
             
             Text("Periodo: \(invoice.period ?? "N/A") | Vence: \(invoice.due_date ?? "Sin fecha")")
                 .font(.system(size: 12))
-                .foregroundColor(.gray)
+                .foregroundColor(Color.theme.textMuted)
             
             HStack {
                 if let address = invoice.service?.address_text {
                     Text(address)
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.theme.textMuted)
                         .lineLimit(1)
                 }
                 Spacer()

@@ -53,7 +53,7 @@ struct TicketsListView: View {
                         .ignoresSafeArea()
                     
                     Form {
-                        Section(header: Text("Gestión del Ticket").foregroundColor(.gray)) {
+                        Section(header: Text("Gestión del Ticket").foregroundColor(Color.theme.textMuted)) {
                             Picker("Estado", selection: $editStatus) {
                                 Text("Abierto").tag("open")
                                 Text("En Progreso").tag("in_progress")
@@ -72,7 +72,7 @@ struct TicketsListView: View {
                         }
                         .listRowBackground(Color.theme.surface)
                         
-                        Section(header: Text("Asignar Técnico").foregroundColor(.gray)) {
+                        Section(header: Text("Asignar Técnico").foregroundColor(Color.theme.textMuted)) {
                             Picker("Técnico", selection: $selectedTechId) {
                                 Text("Sin Asignar").tag("")
                                 ForEach(techniciansList) { tech in
@@ -164,7 +164,7 @@ struct TicketsListView: View {
             
             Text(ticket.description ?? "Sin descripción")
                 .font(.system(size: 13))
-                .foregroundColor(.gray)
+                .foregroundColor(Color.theme.textMuted)
                 .lineLimit(2)
             
             HStack {
@@ -176,7 +176,7 @@ struct TicketsListView: View {
                 
                 Text("Cliente: \(ticket.customer?.full_name ?? "N/A")")
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color.theme.textMuted)
             }
         }
     }

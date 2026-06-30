@@ -55,7 +55,7 @@ struct TechniciansListView: View {
                         .ignoresSafeArea()
                     
                     Form {
-                        Section(header: Text("Acceso").foregroundColor(.gray)) {
+                        Section(header: Text("Acceso").foregroundColor(Color.theme.textMuted)) {
                             TextField("Correo electrónico", text: $newEmail)
                                 .foregroundColor(.white)
                                 .autocapitalization(.none)
@@ -65,7 +65,7 @@ struct TechniciansListView: View {
                         }
                         .listRowBackground(Color.theme.surface)
                         
-                        Section(header: Text("Perfil del Técnico").foregroundColor(.gray)) {
+                        Section(header: Text("Perfil del Técnico").foregroundColor(Color.theme.textMuted)) {
                             TextField("Nombre Completo", text: $newFullName)
                                 .foregroundColor(.white)
                             TextField("Teléfono", text: $newPhone)
@@ -128,7 +128,7 @@ struct TechniciansListView: View {
                         if let phone = tech.phone, !phone.isEmpty {
                             Label(phone, systemImage: "phone.fill")
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color.theme.textMuted)
                         }
                         Spacer()
                         BadgeView(text: tech.status ?? "activo", status: tech.status ?? "active")

@@ -52,7 +52,7 @@ struct PlansListView: View {
                                     if let desc = plan.description, !desc.isEmpty {
                                         Text(desc)
                                             .font(.system(size: 12))
-                                            .foregroundColor(.gray)
+                                            .foregroundColor(Color.theme.textMuted)
                                     }
                                 }
                                 
@@ -96,7 +96,7 @@ struct PlansListView: View {
                         .ignoresSafeArea()
                     
                     Form {
-                        Section(header: Text("Detalles del Plan").foregroundColor(.gray)) {
+                        Section(header: Text("Detalles del Plan").foregroundColor(Color.theme.textMuted)) {
                             TextField("Nombre del Plan", text: $newName)
                                 .foregroundColor(.white)
                             TextField("Precio (S/.)", text: $newPrice)

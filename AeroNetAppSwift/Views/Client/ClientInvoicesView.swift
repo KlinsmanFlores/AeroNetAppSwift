@@ -128,7 +128,7 @@ struct InvoiceRowView: View {
                     
                     Text("Vencimiento: \(invoice.due_date ?? "Sin fecha")")
                         .font(.system(size: 13))
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.theme.textMuted)
                 }
                 
                 Spacer()
@@ -186,7 +186,7 @@ struct InvoiceRowView: View {
                             Image(systemName: "arrow.down.doc.fill")
                             Text("Descargar XML Tributario (SUNAT)")
                                 .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color.theme.textMuted)
                             Spacer()
                         }
                         .padding(.horizontal, 4)
@@ -201,14 +201,14 @@ struct InvoiceRowView: View {
                     ProgressView().scaleEffect(0.7)
                     Text("Buscando comprobante...")
                         .font(.caption2)
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.theme.textMuted)
                 } else {
                     Image(systemName: "exclamationmark.circle.fill")
                         .font(.caption)
                         .foregroundColor(.orange)
                     Text("Comprobante electrónico no disponible en SUNAT")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.theme.textMuted)
                 }
             }
             .padding(.top, 4)

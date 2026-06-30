@@ -32,7 +32,7 @@ struct PaymentsListView: View {
                                         
                                         Text("Método: \(payment.payment_method?.uppercased() ?? "MÉTODO")")
                                             .font(.system(size: 12))
-                                            .foregroundColor(.gray)
+                                            .foregroundColor(Color.theme.textMuted)
                                     }
                                     Spacer()
                                     Text("+\((payment.amount_received ?? 0).currencyPEN)")
@@ -42,7 +42,7 @@ struct PaymentsListView: View {
                                 
                                 Text("Fecha: \(payment.created_at ?? "Sin fecha")")
                                     .font(.system(size: 11))
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(Color.theme.textMuted)
                             }
                             .padding(.vertical, 6)
                             .listRowBackground(Color.theme.cardBackground.opacity(0.6))

@@ -18,6 +18,10 @@ struct AeroNetAppSwiftApp: App {
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
         UINavigationBar.appearance().compactAppearance = appearance
+        
+        // 🚀 Eliminar fondo blanco/gris de Listas y Tablas globalmente para ver el gradiente celeste
+        UITableView.appearance().backgroundColor = .clear
+        UICollectionView.appearance().backgroundColor = .clear
     }
     
     var body: some Scene {

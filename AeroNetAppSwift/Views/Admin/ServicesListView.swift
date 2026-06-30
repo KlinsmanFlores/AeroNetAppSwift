@@ -34,7 +34,7 @@ struct ServicesListView: View {
                                 
                                 Text(service.address_text ?? "Dirección sin registrar")
                                     .font(.system(size: 13))
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(Color.theme.textMuted)
                                 
                                 HStack {
                                     Label(
@@ -47,7 +47,7 @@ struct ServicesListView: View {
                                     
                                     Text("Día de Pago: \(service.billing_day ?? 1)")
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color.theme.textMuted)
                                 }
                             }
                             .padding(.vertical, 8)

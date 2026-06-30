@@ -80,7 +80,7 @@ struct ClientTicketsView: View {
                         .ignoresSafeArea()
                     
                     Form {
-                        Section(header: Text("Servicio Afectado").foregroundColor(.gray)) {
+                        Section(header: Text("Servicio Afectado").foregroundColor(Color.theme.textMuted)) {
                             Picker("Servicio", selection: $selectedServiceId) {
                                 Text("Ninguno / General").tag("")
                                 ForEach(myServicesList) { srv in
@@ -91,7 +91,7 @@ struct ClientTicketsView: View {
                         }
                         .listRowBackground(Color.white)
                         
-                        Section(header: Text("Detalles de Solicitud").foregroundColor(.gray)) {
+                        Section(header: Text("Detalles de Solicitud").foregroundColor(Color.theme.textMuted)) {
                             Picker("Categoría del Problema", selection: $selectedCategory) {
                                 Text("Reclamo o Avería").tag("RECLAMO")
                                 Text("Problemas de Cobertura Wi-Fi").tag("COBERTURA_WIFI")
@@ -185,7 +185,7 @@ struct ClientTicketsView: View {
             
             Text(ticket.description ?? "Sin descripción")
                 .font(.system(size: 13))
-                .foregroundColor(.gray)
+                .foregroundColor(Color.theme.textMuted)
                 .lineLimit(2)
             
             HStack {
@@ -198,7 +198,7 @@ struct ClientTicketsView: View {
                 if let dateStr = ticket.created_at {
                     Text(dateStr)
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.theme.textMuted)
                 }
             }
         }

@@ -96,7 +96,7 @@ struct ClientPlansView: View {
                             
                             Text("Hemos registrado tu solicitud de servicio para el plan \(plan.name ?? ""). Un asesor técnico se comunicará contigo a la brevedad.")
                                 .font(.subheadline)
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color.theme.textMuted)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal, 30)
                             
@@ -209,7 +209,7 @@ struct ClientPlansView: View {
     
     private func requestForm(plan: Plan) -> some View {
         Form {
-            Section(header: Text("Plan Seleccionado").foregroundColor(.gray)) {
+            Section(header: Text("Plan Seleccionado").foregroundColor(Color.theme.textMuted)) {
                 HStack {
                     Text(plan.name ?? "")
                         .bold()
@@ -221,7 +221,7 @@ struct ClientPlansView: View {
             }
             .listRowBackground(Color.theme.surface)
             
-            Section(header: Text("Tus Datos").foregroundColor(.gray)) {
+            Section(header: Text("Tus Datos").foregroundColor(Color.theme.textMuted)) {
                 TextField("Nombre Completo", text: $clientName)
                     .foregroundColor(.white)
                 TextField("Teléfono", text: $clientPhone)
@@ -236,7 +236,7 @@ struct ClientPlansView: View {
             }
             .listRowBackground(Color.theme.surface)
             
-            Section(header: Text("Detalles de Conexión").foregroundColor(.gray)) {
+            Section(header: Text("Detalles de Conexión").foregroundColor(Color.theme.textMuted)) {
                 TextField("Dirección de Instalación", text: $clientAddress)
                     .foregroundColor(.white)
                 TextField("Notas Adicionales / Referencias", text: $requestNotes)
