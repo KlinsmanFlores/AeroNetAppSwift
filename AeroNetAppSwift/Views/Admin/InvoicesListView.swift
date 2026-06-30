@@ -179,7 +179,7 @@ struct InvoicesListView: View {
     private var invoicesList: some View {
         List {
             ForEach(viewModel.invoices) { invoice in
-                invoiceRow(invoice)
+                AdminInvoiceRowView(invoice: invoice, viewModel: viewModel)
                     .padding(.vertical, 6)
                     .listRowBackground(Color.theme.cardBackground.opacity(0.6))
             }
@@ -189,85 +189,99 @@ struct InvoicesListView: View {
         .background(Color.clear)
     }
     
-    private func invoiceRow(_ invoice: Invoice) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(invoice.service?.customer?.full_name ?? "Cliente Desconocido")
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundColor(.black)
-                Spacer()
-                BadgeView(text: invoice.statusLabel, status: invoice.status ?? "pending")
-            }
-            
-            Text("Periodo: \(invoice.period ?? "N/A") | Vence: \(invoice.due_date ?? "Sin fecha")")
-                .font(.system(size: 12))
-                .foregroundColor(Color.theme.textMuted)
-            
-            HStack {
-                if let address = invoice.service?.address_text {
-                    Text(address)
-                        .font(.caption)
-                        .foregroundColor(Color.theme.textMuted)
-                        .lineLimit(1)
-                }
-                Spacer()
-                Text((invoice.total ?? 0.0).currencyPEN)
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.black)
-            }
-            
-            if let doc = viewModel.electronicDocuments[invoice.id] {
-                Divider().background(Color.white.opacity(0.15))
-                
-                VStack(spacing: 8) {
-                    Button(action: {
-                        if let pdfUrlString = doc.pdf_url, let url = URL(string: pdfUrlString) {
-                            viewModel.activeWebUrl = url
-                            viewModel.activeDocTitle = "\(doc.type ?? "COMPROBANTE") \(doc.series ?? "")-\(doc.number ?? 0)"
-                            viewModel.showDocViewer = true
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: "doc.text.magnifyingglass")
-                            Text("Ver \(doc.type == "FACTURA" ? "Factura" : "Boleta") Digital")
-                                .font(.system(size: 13, weight: .bold))
-                            Spacer()
-                            Image(systemName: "chevron.right").font(.caption)
-                        }
-                        .padding(.vertical, 12)
-                        .padding(.horizontal, 14)
-                        .background(Color.blue.opacity(0.35))
-                        .foregroundColor(.black)
-                        .cornerRadius(10)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    if let xmlStr = doc.xml_url, !xmlStr.isEmpty {
-                        Button(action: {
-                            viewModel.abrirEnNavegador(urlString: xmlStr)
-                        }) {
-                            HStack {
-                                Image(systemName: "arrow.down.doc.fill")
-                                Text("Descargar XML Tributario (SUNAT)")
-                                    .font(.system(size: 11, weight: .medium))
-                                    .foregroundColor(Color.theme.textMuted)
-                                Spacer()
-                            }
-                            .padding(.horizontal, 4)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                }
-                .padding(.top, 4)
-            }
-        }
-    }
-    
     private func deleteInvoice(at offsets: IndexSet) {
         for index in offsets {
             let invoice = viewModel.invoices[index]
             viewModel.deleteInvoice(id: invoice.id) { _ in }
         }
+    }
+}
+
+struct AdminInvoiceRowView: View {
+    let invoice: Invoice
+    @ObservedObject var viewModel: InvoicesViewModel
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            headerRow
+            Text("Periodo: \(invoice.period ?? "N/A") | Vence: \(invoice.due_date ?? "Sin fecha")")
+                .font(.system(size: 12))
+                .foregroundColor(Color.theme.textMuted)
+            addressAndTotalRow
+            
+            if let doc = viewModel.electronicDocuments[invoice.id] {
+                Divider().background(Color.white.opacity(0.15))
+                documentActionsView(doc: doc)
+            }
+        }
+    }
+    
+    private var headerRow: some View {
+        HStack {
+            Text(invoice.service?.customer?.full_name ?? "Cliente Desconocido")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundColor(.black)
+            Spacer()
+            BadgeView(text: invoice.statusLabel, status: invoice.status ?? "pending")
+        }
+    }
+    
+    private var addressAndTotalRow: some View {
+        HStack {
+            if let address = invoice.service?.address_text {
+                Text(address)
+                    .font(.caption)
+                    .foregroundColor(Color.theme.textMuted)
+                    .lineLimit(1)
+            }
+            Spacer()
+            Text((invoice.total ?? 0.0).currencyPEN)
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(.black)
+        }
+    }
+    
+    private func documentActionsView(doc: ElectronicDocumentModel) -> some View {
+        VStack(spacing: 8) {
+            Button(action: {
+                if let pdfUrlString = doc.pdf_url, let url = URL(string: pdfUrlString) {
+                    viewModel.activeWebUrl = url
+                    viewModel.activeDocTitle = "\(doc.type ?? "COMPROBANTE") \(doc.series ?? "")-\(doc.number ?? 0)"
+                    viewModel.showDocViewer = true
+                }
+            }) {
+                HStack {
+                    Image(systemName: "doc.text.magnifyingglass")
+                    Text("Ver \(doc.type == "FACTURA" ? "Factura" : "Boleta") Digital")
+                        .font(.system(size: 13, weight: .bold))
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.caption)
+                }
+                .padding(.vertical, 12)
+                .padding(.horizontal, 14)
+                .background(Color.blue.opacity(0.35))
+                .foregroundColor(.black)
+                .cornerRadius(10)
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            if let xmlStr = doc.xml_url, !xmlStr.isEmpty {
+                Button(action: {
+                    viewModel.abrirEnNavegador(urlString: xmlStr)
+                }) {
+                    HStack {
+                        Image(systemName: "arrow.down.doc.fill")
+                        Text("Descargar XML Tributario (SUNAT)")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundColor(Color.theme.textMuted)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 4)
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+        }
+        .padding(.top, 4)
     }
 }
 
