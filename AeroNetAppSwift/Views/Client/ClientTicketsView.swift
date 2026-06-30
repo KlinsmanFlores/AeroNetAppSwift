@@ -87,9 +87,9 @@ struct ClientTicketsView: View {
                                     Text(srv.plan?.name ?? srv.address_text ?? "Servicio").tag(srv.id)
                                 }
                             }
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         }
-                        .listRowBackground(Color.theme.surface)
+                        .listRowBackground(Color.white)
                         
                         Section(header: Text("Detalles de Solicitud").foregroundColor(.gray)) {
                             Picker("Categoría del Problema", selection: $selectedCategory) {
@@ -99,22 +99,22 @@ struct ClientTicketsView: View {
                                 Text("Mejorar mi Plan").tag("MEJORA_PLAN")
                                 Text("Pausar por Vacaciones").tag("PAUSA_VACACIONES")
                             }
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             
                             Picker("Prioridad", selection: $selectedPriority) {
                                 Text("Baja").tag("low")
                                 Text("Media").tag("medium")
                                 Text("Alta").tag("high")
                             }
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             
                             TextField("Asunto", text: $newSubject)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             
                             TextField("Descripción del problema", text: $newDescription)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
-                        .listRowBackground(Color.theme.surface)
+                        .listRowBackground(Color.white)
                     }
                     .background(Color.clear)
                 }
@@ -145,7 +145,8 @@ struct ClientTicketsView: View {
                                     }
                                 }
                         }
-                        .foregroundColor(Color.theme.accent)
+                        .foregroundColor(newSubject.isEmpty || newDescription.isEmpty ? .gray : Color.theme.accent)
+                        .disabled(newSubject.isEmpty || newDescription.isEmpty)
                     }
                 }
             }
