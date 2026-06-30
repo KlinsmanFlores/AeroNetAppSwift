@@ -5,33 +5,38 @@ struct ClientHomeView: View {
     @StateObject private var viewModel = ClientHomeViewModel()
     
     var body: some View {
-        ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-            
-            ScrollView {
-                VStack(spacing: 24) {
-                    headerView
-                    
-                    if viewModel.isLoading {
-                        VStack(spacing: 16) {
-                            ShimmerView(height: 120)
-                            ShimmerView(height: 160)
+        // 🚀 MEJORA CLARO: Agregamos el contenedor de navegación nativo de iOS
+        NavigationView {
+            ZStack {
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 24) {
+                        headerView
+                        
+                        if viewModel.isLoading {
+                            VStack(spacing: 16) {
+                                ShimmerView(height: 120)
+                                ShimmerView(height: 160)
+                            }
+                            .padding(.horizontal, 20)
+                        } else if let error = viewModel.errorMessage {
+                            errorView(error: error)
+                        } else {
+                            debtSummaryView
+                            servicesSectionView
                         }
-                        .padding(.horizontal, 20)
-                    } else if let error = viewModel.errorMessage {
-                        errorView(error: error)
-                    } else {
-                        debtSummaryView
-                        servicesSectionView
                     }
+                    .padding(.bottom, 30)
                 }
-                .padding(.bottom, 30)
             }
+            // Ocultamos la barra por defecto para que no choque con tu hermosa cabecera personalizada
+            .navigationBarHidden(true)
         }
         .onAppear {
             viewModel.loadDashboard()
@@ -112,7 +117,7 @@ struct ClientHomeView: View {
                 }
                 
                 if viewModel.totalPendingDebt > 0 {
-                    Text("Tienes facturas pendientes de pago. Por favor regulariza tu servicio para evitar suspensiones.")
+                    Text("Tienes facturas pendientes de pago. Por favor regulariza tu servicio para evitar suspensions.")
                         .font(.system(size: 13))
                         .foregroundColor(Color.theme.textSecondary)
                 } else {
@@ -152,8 +157,12 @@ struct ClientHomeView: View {
                 }
                 .padding(.horizontal, 20)
             } else {
+                // 🚀 CAMBIO EXCLUSIVO CLARO CLONE: Enlazamos táctilmente cada servicio al detalle
                 ForEach(viewModel.myServices) { service in
-                    serviceCard(service: service)
+                    NavigationLink(destination: ClientServiceDetailView(service: service)) {
+                        serviceCard(service: service)
+                    }
+                    .buttonStyle(PlainButtonStyle()) // 🚀 Clave para que la tarjeta no pierda sus colores originales al volverse link
                 }
             }
         }
@@ -164,6 +173,7 @@ struct ClientHomeView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
+                        // Cambiado dinámicamente según las especificaciones de tu Supabase
                         Text(service.plan?.name ?? "Plan Contratado")
                             .font(.system(size: 17, weight: .bold))
                             .foregroundColor(.white)
@@ -175,7 +185,11 @@ struct ClientHomeView: View {
                     
                     Spacer()
                     
-                    BadgeView(text: service.statusLabel, status: service.status ?? "pending")
+                    // Icono sutil a la derecha que le avisa al usuario que puede tocar para ver más detalle
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.white.opacity(0.5))
+                        .padding(.trailing, 4)
                 }
                 
                 Divider()
@@ -185,6 +199,7 @@ struct ClientHomeView: View {
                     Label(service.address_text ?? "Sin dirección", systemImage: "mappin.and.ellipse")
                         .font(.system(size: 12))
                         .foregroundColor(Color.theme.textSecondary)
+                        .multilineTextAlignment(.leading)
                     
                     Label("Día de facturación: \(service.billing_day ?? 1)", systemImage: "calendar")
                         .font(.system(size: 12))

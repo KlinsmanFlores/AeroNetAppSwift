@@ -4,6 +4,12 @@ struct DashboardView: View {
     @EnvironmentObject var authManager: AuthManager
     @StateObject private var viewModel = DashboardViewModel()
     
+    // 🚀 RESPONSIVO: Configuramos una grilla automática de 2 columnas flexibles
+    private let columnasGrid = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+    
     var body: some View {
         ZStack {
             LinearGradient(
@@ -46,13 +52,11 @@ struct DashboardView: View {
                     if viewModel.isLoading {
                         // Skeleton load placeholders (Semana 14)
                         VStack(spacing: 16) {
-                            HStack(spacing: 16) {
-                                ShimmerView(height: 90).frame(maxWidth: .infinity)
-                                ShimmerView(height: 90).frame(maxWidth: .infinity)
-                            }
-                            HStack(spacing: 16) {
-                                ShimmerView(height: 90).frame(maxWidth: .infinity)
-                                ShimmerView(height: 90).frame(maxWidth: .infinity)
+                            LazyVGrid(columns: columnasGrid, spacing: 16) {
+                                ShimmerView(height: 90)
+                                ShimmerView(height: 90)
+                                ShimmerView(height: 90)
+                                ShimmerView(height: 90)
                             }
                             ShimmerView(height: 200)
                         }
@@ -65,7 +69,6 @@ struct DashboardView: View {
                             
                             Button("Reintentar") {
                                 viewModel.loadDashboardData()
-                                
                             }
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
@@ -75,17 +78,15 @@ struct DashboardView: View {
                         }
                         .padding(.vertical, 40)
                     } else {
-                        // Tarjetas de Estadísticas (Semana 9)
-                        VStack(spacing: 16) {
-                            HStack(spacing: 16) {
-                                StatCard(title: "Clientes", value: "\(viewModel.totalCustomers)", iconName: "person.3.fill", iconColor: .blue)
-                                StatCard(title: "Servicios Activos", value: "\(viewModel.totalActiveServices)", iconName: "network", iconColor: Color.theme.success)
-                            }
+                        // 🚀 SOLUCIÓN AL DESCUADRE: Reemplazamos los HStack rígidos por un LazyVGrid
+                        LazyVGrid(columns: columnasGrid, spacing: 16) {
+                            StatCard(title: "Clientes", value: "\(viewModel.totalCustomers)", iconName: "person.3.fill", iconColor: .blue)
                             
-                            HStack(spacing: 16) {
-                                StatCard(title: "Tickets Abiertos", value: "\(viewModel.totalPendingTickets)", iconName: "exclamationmark.bubble.fill", iconColor: Color.theme.warning)
-                                StatCard(title: "Deuda Pendiente", value: viewModel.totalOutstandingAmount.currencyPEN, iconName: "creditcard.fill", iconColor: Color.theme.danger)
-                            }
+                            StatCard(title: "Servicios Activos", value: "\(viewModel.totalActiveServices)", iconName: "network", iconColor: Color.theme.success)
+                            
+                            StatCard(title: "Tickets Abiertos", value: "\(viewModel.totalPendingTickets)", iconName: "exclamationmark.bubble.fill", iconColor: Color.theme.warning)
+                            
+                            StatCard(title: "Deuda Pendiente", value: viewModel.totalOutstandingAmount.currencyPEN, iconName: "creditcard.fill", iconColor: Color.theme.danger)
                         }
                         .padding(.horizontal, 20)
                         
@@ -113,9 +114,10 @@ struct DashboardView: View {
                                                     .font(.system(size: 15, weight: .semibold))
                                                     .foregroundColor(Color.theme.textPrimary)
                                                 
+                                                // 🎨 CORRECCIÓN DE COLOR GRIS: Forzamos textMuted con la nueva opacidad alta
                                                 Text(payment.payment_method?.uppercased() ?? "MÉTODO")
                                                     .font(.system(size: 11, weight: .bold))
-                                                    .foregroundColor(Color.theme.accent)
+                                                    .foregroundColor(Color.theme.textMuted) // Antes se perdía, ahora resalta impecable
                                             }
                                             
                                             Spacer()
@@ -139,7 +141,6 @@ struct DashboardView: View {
         .onAppear {
             viewModel.loadDashboardData()
         }
-        
     }
 }
 

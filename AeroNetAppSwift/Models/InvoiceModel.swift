@@ -12,6 +12,9 @@ struct Invoice: Codable, Identifiable {
     let created_at: String?
     let service: InvoiceServiceModel?
     
+    // El retoque clave: Paridad con tu tabla aeronet.electronic_documents
+    let electronic_document: ElectronicDocumentModel?
+    
     var displayTotal: String { (total ?? 0).currencyPEN }
     var statusLabel: String {
         switch status?.lowercased() {
@@ -23,6 +26,17 @@ struct Invoice: Codable, Identifiable {
         }
     }
     var dueDate: Date? { Date.fromISO(due_date) }
+}
+
+// Estructura nueva para mapear las boletas y facturas emitidas de Nubefact
+struct ElectronicDocumentModel: Codable {
+    let id: String
+    let type: String?         // "BOLETA" o "FACTURA"
+    let series: String?       // "FFF1" o "BBB1"
+    let number: Int?
+    let pdf_url: String?
+    let xml_url: String?
+    let sunat_status: String?
 }
 
 struct InvoiceServiceModel: Codable {

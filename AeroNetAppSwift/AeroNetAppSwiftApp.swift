@@ -5,6 +5,21 @@ struct AeroNetAppSwiftApp: App {
     @StateObject private var authManager = AuthManager()
     @State private var showSplash = true
     
+    // 🚀 INYECCIÓN TRANSPARENTE: Obliga a las Navigation Bars a respetar el fondo en cualquier scroll
+    init() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground() // Adiós al bloque blanco molesto
+        appearance.backgroundColor = .clear
+        
+        // Mantenemos las letras de los títulos siempre legibles en color blanco
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+    }
+    
     var body: some Scene {
         WindowGroup {
             ZStack {

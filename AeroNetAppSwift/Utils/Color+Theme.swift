@@ -15,12 +15,12 @@ struct ColorTheme {
     // Acento principal (Blanco para resaltar sobre el azul)
     let accent = Color.white
     let accentGold = Color.white
-    let accentLight = Color.white.opacity(0.8)
+    let accentLight = Color.white.opacity(0.9)
     
-    // Texto
+    // 🚀 RETOQUE DE CONTRASTE: Eliminamos la transparencia excesiva para que las letras se lean oscuras o sólidas
     let textPrimary = Color.white
-    let textSecondary = Color.white.opacity(0.85)
-    let textMuted = Color.white.opacity(0.65)
+    let textSecondary = Color.white // 💡 Texto secundario sólido al 100% para leer fechas y métodos sin esfuerzo
+    let textMuted = Color.white.opacity(0.85) // 💡 Modificado de 0.65 a 0.85 para alto contraste legible
     
     // Superficies glass
     let surface = Color.white.opacity(0.25)

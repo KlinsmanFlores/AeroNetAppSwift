@@ -20,7 +20,7 @@ struct ClientTicketsView: View {
             .ignoresSafeArea()
             
             VStack {
-                if viewModel.isLoading && viewModel.tickets.isEmpty {
+               	 if viewModel.isLoading && viewModel.tickets.isEmpty {
                     ProgressView("Cargando tickets...")
                         .foregroundColor(.white)
                 } else if let error = viewModel.errorMessage {
