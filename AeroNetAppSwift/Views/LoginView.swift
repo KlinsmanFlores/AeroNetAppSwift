@@ -59,7 +59,7 @@ struct LoginView: View {
                                         Image(systemName: "envelope.fill")
                                             .foregroundColor(Color.theme.accent)
                                         TextField("usuario@ejemplo.com", text: $viewModel.email)
-                                            .foregroundColor(.white)
+                                            .foregroundColor(.black)
                                             .autocapitalization(.none)
                                             .keyboardType(.emailAddress)
                                     }
@@ -78,7 +78,7 @@ struct LoginView: View {
                                         Image(systemName: "lock.fill")
                                             .foregroundColor(Color.theme.accent)
                                         SecureField("Contraseña", text: $viewModel.password)
-                                            .foregroundColor(.white)
+                                            .foregroundColor(.black)
                                     }
                                     .padding()
                                     .background(Color.theme.surface)

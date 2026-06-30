@@ -20,7 +20,7 @@ struct TicketsListView: View {
             VStack {
                 if viewModel.isLoading && viewModel.tickets.isEmpty {
                     ProgressView("Cargando tickets...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 } else if let error = viewModel.errorMessage {
                     EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
                 } else if viewModel.tickets.isEmpty {
@@ -60,7 +60,7 @@ struct TicketsListView: View {
                                 Text("Resuelto").tag("resolved")
                                 Text("Cerrado").tag("closed")
                             }
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             
                             Picker("Prioridad", selection: $editPriority) {
                                 Text("Baja").tag("low")
@@ -68,7 +68,7 @@ struct TicketsListView: View {
                                 Text("Alta").tag("high")
                                 Text("Urgente").tag("urgent")
                             }
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         }
                         .listRowBackground(Color.theme.surface)
                         
@@ -79,7 +79,7 @@ struct TicketsListView: View {
                                     Text(tech.displayName).tag(tech.id)
                                 }
                             }
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         }
                         .listRowBackground(Color.theme.surface)
                     }
@@ -157,7 +157,7 @@ struct TicketsListView: View {
             HStack {
                 Text(ticket.subject ?? "Sin Asunto")
                     .font(.system(size: 15, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                 Spacer()
                 BadgeView(text: ticket.statusLabel, status: ticket.status ?? "open")
             }

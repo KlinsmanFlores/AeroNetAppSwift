@@ -20,11 +20,11 @@ struct PlansListView: View {
             VStack {
                 if viewModel.isLoading && viewModel.plans.isEmpty {
                     ProgressView("Cargando planes...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 } else if let error = viewModel.errorMessage {
                     VStack {
                         Text(error)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             .padding()
                         
                         Button("Reintentar") {
@@ -43,7 +43,7 @@ struct PlansListView: View {
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text(plan.name ?? "Plan Sin Nombre")
                                         .font(.system(size: 16, weight: .bold))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                     
                                     Text("\(Int(plan.speed_mbps ?? 0)) Mbps")
                                         .font(.system(size: 13, weight: .semibold))
@@ -60,7 +60,7 @@ struct PlansListView: View {
                                 
                                 Text((plan.price ?? 0).currencyPEN)
                                     .font(.system(size: 16, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.black)
                             }
                             .padding(.vertical, 6)
                             .listRowBackground(Color.theme.cardBackground.opacity(0.6))
@@ -98,15 +98,15 @@ struct PlansListView: View {
                     Form {
                         Section(header: Text("Detalles del Plan").foregroundColor(Color.theme.textMuted)) {
                             TextField("Nombre del Plan", text: $newName)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             TextField("Precio (S/.)", text: $newPrice)
                                 .keyboardType(.decimalPad)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             TextField("Velocidad (Mbps)", text: $newSpeed)
                                 .keyboardType(.decimalPad)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             TextField("Descripción", text: $newDescription)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
                         .listRowBackground(Color.theme.surface)
                     }

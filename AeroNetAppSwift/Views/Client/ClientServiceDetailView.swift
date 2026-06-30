@@ -19,7 +19,7 @@ struct ClientServiceDetailView: View {
                     VStack(spacing: 12) {
                         Image(systemName: "antenna.radiowaves.left.and.right")
                             .font(.system(size: 40))
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             .padding()
                             .background(Color.green.opacity(0.3))
                             .clipShape(Circle())
@@ -28,13 +28,13 @@ struct ClientServiceDetailView: View {
                         Text(service.plan?.name ?? "Plan Contratado")
                             .font(.title2)
                             .bold()
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         
                         HStack {
                             Circle().fill(Color.green).frame(width: 8, height: 8)
                             Text("Servicio Activo en Línea")
                                 .font(.caption)
-                                .foregroundColor(.white.opacity(0.9))
+                                .foregroundColor(.black.opacity(0.9))
                         }
                     }
                     .padding()
@@ -54,21 +54,21 @@ struct ClientServiceDetailView: View {
                             // 🚀 CORRECCIÓN: Accedemos dinámicamente al entero de speed_mbps del plan
                             Text("\(Int(service.plan?.speed_mbps ?? 0)) Mbps").bold()
                         }
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         
                         HStack {
                             Label("Tecnología:", systemImage: "fiberchannel")
                             Spacer()
                             Text("Fibra Óptica FTTH").bold()
                         }
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         
                         HStack {
                             Label("Ancho de Banda:", systemImage: "gauge.medium")
                             Spacer()
                             Text("Ilimitado").bold()
                         }
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     }
                     .padding()
                     .background(Color.white.opacity(0.12))
@@ -99,11 +99,11 @@ struct ClientServiceDetailView: View {
                         // 🚀 CORRECCIÓN UNWRAP: Forzamos el desempaquetado seguro con ?? para evitar el crash del compilador
                         Label(service.address_text ?? "Sin dirección", systemImage: "mappin.and.ellipse")
                             .font(.system(size: 14))
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         
                         Text("Ciclo de Facturación: Día \(service.billing_day ?? 21) de cada mes")
                             .font(.caption)
-                            .foregroundColor(.white.opacity(0.7))
+                            .foregroundColor(.black.opacity(0.7))
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -128,7 +128,7 @@ struct FilaServicioEstado: View {
         HStack {
             Text(nombre)
                 .font(.system(size: 14))
-                .foregroundColor(.white)
+                .foregroundColor(.black)
             Spacer()
             Text(habilitado ? "Activo" : "Desactivado")
                 .font(.caption)

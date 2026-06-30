@@ -30,7 +30,7 @@ struct InvoicesListView: View {
                 
                 if viewModel.isLoading && viewModel.invoices.isEmpty {
                     ProgressView("Cargando facturas...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .padding(.top, 40)
                 } else if let error = viewModel.errorMessage {
                     EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
@@ -66,7 +66,7 @@ struct InvoicesListView: View {
                     VStack(spacing: 20) {
                         Text("Generar Facturas Mensuales")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         
                         Text("Ingrese el periodo en formato AAAA-MM (Ej. 2026-06):")
                             .font(.subheadline)
@@ -78,7 +78,7 @@ struct InvoicesListView: View {
                             .padding()
                             .background(Color.theme.surface)
                             .cornerRadius(12)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             .padding(.horizontal, 30)
                         
                         Button("Generar") {
@@ -169,7 +169,7 @@ struct InvoicesListView: View {
             HStack {
                 Text(invoice.service?.customer?.full_name ?? "Cliente Desconocido")
                     .font(.system(size: 15, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                 Spacer()
                 BadgeView(text: invoice.statusLabel, status: invoice.status ?? "pending")
             }
@@ -188,7 +188,7 @@ struct InvoicesListView: View {
                 Spacer()
                 Text((invoice.total ?? 0.0).currencyPEN)
                     .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
             }
         }
     }

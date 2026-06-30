@@ -15,7 +15,7 @@ struct PaymentsListView: View {
             VStack {
                 if viewModel.isLoading && viewModel.payments.isEmpty {
                     ProgressView("Cargando historial de pagos...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 } else if let error = viewModel.errorMessage {
                     EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
                 } else if viewModel.payments.isEmpty {
@@ -28,7 +28,7 @@ struct PaymentsListView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(payment.transaction_reference ?? "Simulación de Pago")
                                             .font(.system(size: 15, weight: .bold))
-                                            .foregroundColor(.white)
+                                            .foregroundColor(.black)
                                         
                                         Text("Método: \(payment.payment_method?.uppercased() ?? "MÉTODO")")
                                             .font(.system(size: 12))

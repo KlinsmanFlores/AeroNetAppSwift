@@ -15,7 +15,7 @@ struct ServicesListView: View {
             VStack {
                 if viewModel.isLoading && viewModel.services.isEmpty {
                     ProgressView("Cargando servicios...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 } else if let error = viewModel.errorMessage {
                     EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
                 } else if viewModel.services.isEmpty {
@@ -27,7 +27,7 @@ struct ServicesListView: View {
                                 HStack {
                                     Text(service.customer?.full_name ?? "Cliente Desconocido")
                                         .font(.system(size: 16, weight: .bold))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                     Spacer()
                                     BadgeView(text: service.statusLabel, status: service.status ?? "pending")
                                 }

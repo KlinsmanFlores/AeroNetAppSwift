@@ -16,7 +16,7 @@ struct ClientDebtsView: View {
             VStack {
                 if viewModel.isLoading && viewModel.pendingInvoices.isEmpty {
                     ProgressView("Buscando deudas...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 } else if let error = viewModel.errorMessage {
                     EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
                 } else if viewModel.pendingInvoices.isEmpty {
@@ -58,7 +58,7 @@ struct ClientDebtsView: View {
                                             VStack(alignment: .leading, spacing: 6) {
                                                 Text("Recibo Periodo: \(invoice.period ?? "N/A")")
                                                     .font(.system(size: 16, weight: .bold))
-                                                    .foregroundColor(.white)
+                                                    .foregroundColor(.black)
                                                 
                                                 Text("Vence: \(invoice.due_date ?? "Sin fecha")")
                                                     .font(.system(size: 13))
@@ -66,7 +66,7 @@ struct ClientDebtsView: View {
                                                 
                                                 Text("Monto: \((invoice.total ?? 0).currencyPEN)")
                                                     .font(.system(size: 14, weight: .semibold))
-                                                    .foregroundColor(.white)
+                                                    .foregroundColor(.black)
                                             }
                                             
                                             Spacer()

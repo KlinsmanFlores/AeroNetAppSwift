@@ -22,7 +22,7 @@ struct TechniciansListView: View {
             VStack {
                 if viewModel.isLoading && viewModel.technicians.isEmpty {
                     ProgressView("Cargando técnicos...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 } else if let error = viewModel.errorMessage {
                     EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
                 } else if viewModel.technicians.isEmpty {
@@ -57,23 +57,23 @@ struct TechniciansListView: View {
                     Form {
                         Section(header: Text("Acceso").foregroundColor(Color.theme.textMuted)) {
                             TextField("Correo electrónico", text: $newEmail)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                                 .autocapitalization(.none)
                                 .keyboardType(.emailAddress)
                             SecureField("Contraseña", text: $newPassword)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
                         .listRowBackground(Color.theme.surface)
                         
                         Section(header: Text("Perfil del Técnico").foregroundColor(Color.theme.textMuted)) {
                             TextField("Nombre Completo", text: $newFullName)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             TextField("Teléfono", text: $newPhone)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             TextField("Documento Identidad", text: $newDocNumber)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             TextField("Especialidad", text: $newSpecialty)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
                         .listRowBackground(Color.theme.surface)
                     }
@@ -118,7 +118,7 @@ struct TechniciansListView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(tech.displayName)
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     
                     Text("Especialidad: \(tech.specialty ?? "Fibra Óptica")")
                         .font(.system(size: 13, weight: .semibold))

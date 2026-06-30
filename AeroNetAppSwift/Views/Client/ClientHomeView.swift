@@ -176,7 +176,7 @@ struct ClientHomeView: View {
                         // Cambiado dinámicamente según las especificaciones de tu Supabase
                         Text(service.plan?.name ?? "Plan Contratado")
                             .font(.system(size: 17, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         
                         Text("\(Int(service.plan?.speed_mbps ?? 0)) Mbps")
                             .font(.system(size: 13, weight: .semibold))
@@ -188,7 +188,7 @@ struct ClientHomeView: View {
                     // Icono sutil a la derecha que le avisa al usuario que puede tocar para ver más detalle
                     Image(systemName: "chevron.right")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.white.opacity(0.5))
+                        .foregroundColor(.black.opacity(0.5))
                         .padding(.trailing, 4)
                 }
                 

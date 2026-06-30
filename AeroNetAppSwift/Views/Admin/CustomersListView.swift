@@ -18,7 +18,7 @@ struct CustomersListView: View {
             VStack {
                 if viewModel.isLoading && viewModel.customers.isEmpty {
                     ProgressView("Cargando clientes...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 } else if let error = viewModel.errorMessage {
                     EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
                 } else if viewModel.customers.isEmpty {
@@ -53,9 +53,9 @@ struct CustomersListView: View {
                     Form {
                         Section(header: Text("Información Básica").foregroundColor(Color.theme.textMuted)) {
                             TextField("Nombre Completo", text: $editName)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             TextField("Teléfono", text: $editPhone)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
                         .listRowBackground(Color.theme.surface)
                     }
@@ -112,7 +112,7 @@ struct CustomersListView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(customer.full_name ?? "Sin nombre")
                 .font(.system(size: 16, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundColor(.black)
             
             Text(customer.email ?? "Sin email")
                 .font(.system(size: 14))

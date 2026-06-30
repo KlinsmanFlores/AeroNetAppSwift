@@ -34,7 +34,7 @@ struct ClientProfileView: View {
                         
                         Text(viewModel.customer?.full_name ?? authManager.currentUser?.email ?? "Usuario")
                             .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         
                         Text(authManager.currentUser?.email ?? "Sin correo")
                             .font(.system(size: 14))
@@ -43,7 +43,7 @@ struct ClientProfileView: View {
                     
                     if viewModel.isLoading {
                         ProgressView("Cargando perfil...")
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                     } else {
                         // Formulario de edición
                         GlassCard(cornerRadius: 20, padding: 20) {
@@ -59,7 +59,7 @@ struct ClientProfileView: View {
                                         .font(.caption)
                                         .foregroundColor(Color.theme.textMuted)
                                     TextField("Tu nombre", text: $editName)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                         .padding(.vertical, 8)
                                         .padding(.horizontal, 12)
                                         .background(Color.theme.surface)
@@ -72,7 +72,7 @@ struct ClientProfileView: View {
                                         .font(.caption)
                                         .foregroundColor(Color.theme.textMuted)
                                     TextField("Tu teléfono", text: $editPhone)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                         .padding(.vertical, 8)
                                         .padding(.horizontal, 12)
                                         .background(Color.theme.surface)
@@ -100,7 +100,7 @@ struct ClientProfileView: View {
                                         .font(.caption)
                                         .foregroundColor(Color.theme.textMuted)
                                     TextField("Nº de documento", text: $editDocNumber)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                         .padding(.vertical, 8)
                                         .padding(.horizontal, 12)
                                         .background(Color.theme.surface)

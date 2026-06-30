@@ -27,11 +27,11 @@ struct ClientPlansView: View {
             VStack {
                 if viewModel.isLoading && viewModel.plans.isEmpty {
                     ProgressView("Cargando catálogo...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 } else if let error = viewModel.errorMessage {
                     VStack {
                         Text(error)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             .padding()
                         
                         Button("Reintentar") {
@@ -92,7 +92,7 @@ struct ClientPlansView: View {
                             Text("Solicitud Enviada")
                                 .font(.title2)
                                 .fontWeight(.bold)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                             
                             Text("Hemos registrado tu solicitud de servicio para el plan \(plan.name ?? ""). Un asesor técnico se comunicará contigo a la brevedad.")
                                 .font(.subheadline)
@@ -170,7 +170,7 @@ struct ClientPlansView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(plan.name ?? "Plan Fibra")
                             .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                         
                         Text("\(Int(plan.speed_mbps ?? 0)) Mbps")
                             .font(.system(size: 14, weight: .bold))
@@ -181,7 +181,7 @@ struct ClientPlansView: View {
                     
                     Text((plan.price ?? 0).currencyPEN)
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 }
                 
                 if let desc = plan.description, !desc.isEmpty {
@@ -217,30 +217,30 @@ struct ClientPlansView: View {
                     Text((plan.price ?? 0).currencyPEN)
                         .foregroundColor(Color.theme.accent)
                 }
-                .foregroundColor(.white)
+                .foregroundColor(.black)
             }
             .listRowBackground(Color.theme.surface)
             
             Section(header: Text("Tus Datos").foregroundColor(Color.theme.textMuted)) {
                 TextField("Nombre Completo", text: $clientName)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                 TextField("Teléfono", text: $clientPhone)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                 Picker("Documento", selection: $clientDocType) {
                     Text("DNI").tag("DNI")
                     Text("RUC").tag("RUC")
                 }
-                .foregroundColor(.white)
+                .foregroundColor(.black)
                 TextField("Número de Documento", text: $clientDocNum)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
             }
             .listRowBackground(Color.theme.surface)
             
             Section(header: Text("Detalles de Conexión").foregroundColor(Color.theme.textMuted)) {
                 TextField("Dirección de Instalación", text: $clientAddress)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                 TextField("Notas Adicionales / Referencias", text: $requestNotes)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
             }
             .listRowBackground(Color.theme.surface)
             

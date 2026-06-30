@@ -45,7 +45,7 @@ struct ClientInvoicesView: View {
                 if viewModel.isLoading && viewModel.invoices.isEmpty {
                     Spacer()
                     ProgressView("Buscando comprobantes...")
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     Spacer()
                 } else if let error = viewModel.errorMessage {
                     EmptyStateView(iconName: "exclamationmark.triangle", title: "Error", message: error)
@@ -124,7 +124,7 @@ struct InvoiceRowView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Recibo Periodo: \(invoice.period ?? "N/A")")
                         .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     
                     Text("Vencimiento: \(invoice.due_date ?? "Sin fecha")")
                         .font(.system(size: 13))
@@ -136,7 +136,7 @@ struct InvoiceRowView: View {
                 VStack(alignment: .trailing, spacing: 6) {
                     Text((invoice.total ?? 0.0).currencyPEN)
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     
                     BadgeView(text: invoice.statusLabel, status: invoice.status ?? "pending")
                 }
@@ -173,7 +173,7 @@ struct InvoiceRowView: View {
                     .padding(.vertical, 12)
                     .padding(.horizontal, 14)
                     .background(Color.blue.opacity(0.35))
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .cornerRadius(10)
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -231,7 +231,7 @@ struct InvoiceRowView: View {
                     .padding(.vertical, 12)
                     .padding(.horizontal, 14)
                     .background(Color.accentColor)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .cornerRadius(10)
                 }
                 .buttonStyle(PlainButtonStyle()) // 🚀 Adiós definitivo al recuadro blanco roto
@@ -241,7 +241,7 @@ struct InvoiceRowView: View {
                     Text("Enlace de pago en proceso de generación...")
                         .font(.system(size: 12, weight: .medium))
                 }
-                .foregroundColor(.white.opacity(0.6))
+                .foregroundColor(.black.opacity(0.6))
                 .padding(.top, 4)
             }
         }

@@ -42,7 +42,7 @@ struct SignupView: View {
                                     Image(systemName: "person.fill")
                                         .foregroundColor(Color.theme.accent)
                                     TextField("Ej. Juan Pérez", text: $viewModel.fullName)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                 }
                                 .padding()
                                 .background(Color.theme.surface)
@@ -59,7 +59,7 @@ struct SignupView: View {
                                     Image(systemName: "envelope.fill")
                                         .foregroundColor(Color.theme.accent)
                                     TextField("correo@ejemplo.com", text: $viewModel.email)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                         .autocapitalization(.none)
                                         .keyboardType(.emailAddress)
                                 }
@@ -78,7 +78,7 @@ struct SignupView: View {
                                     Image(systemName: "lock.fill")
                                         .foregroundColor(Color.theme.accent)
                                     SecureField("Mínimo 6 caracteres", text: $viewModel.password)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                 }
                                 .padding()
                                 .background(Color.theme.surface)

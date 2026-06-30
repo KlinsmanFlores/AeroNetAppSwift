@@ -18,9 +18,9 @@ struct ColorTheme {
     let accentLight = Color.white.opacity(0.9)
     
     // 🚀 RETOQUE DE CONTRASTE: Eliminamos la transparencia excesiva para que las letras se lean oscuras o sólidas
-    let textPrimary = Color.white
-    let textSecondary = Color.white // 💡 Texto secundario sólido al 100% para leer fechas y métodos sin esfuerzo
-    let textMuted = Color.white.opacity(0.85) // 💡 Modificado de 0.65 a 0.85 para alto contraste legible
+    let textPrimary = Color.black
+    let textSecondary = Color.black // 💡 Texto secundario sólido al 100% para leer fechas y métodos sin esfuerzo
+    let textMuted = Color.black.opacity(0.85) // 💡 Modificado de 0.65 a 0.85 para alto contraste legible
     
     // Superficies glass
     let surface = Color.white.opacity(0.25)
