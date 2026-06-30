@@ -7,15 +7,36 @@ class InvoicesViewModel: ObservableObject {
     @Published var errorMessage: String? = nil
     @Published var successMessage: String? = nil
     
+    // Estados para el visor de documentos en la interfaz
+    @Published var activeWebUrl: URL? = nil
+    @Published var activeDocTitle: String = "Comprobante"
+    @Published var showDocViewer = false
+    
+    // Diccionario dinámico para indexar los documentos encontrados por cada Invoice ID
+    @Published var electronicDocuments: [String: ElectronicDocumentModel] = [:]
+    
     func fetchInvoices() {
         self.isLoading = true
         self.errorMessage = nil
         self.successMessage = nil
+        
+        DispatchQueue.main.async {
+            self.electronicDocuments.removeAll()
+        }
+        
         InvoiceService.shared.fetchAll { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let fetched):
                     self.invoices = fetched
+                    
+                    // Fetch documents for paid invoices
+                    for invoice in fetched {
+                        let status = invoice.status?.lowercased() ?? ""
+                        if status == "paid" || status == "invoiced" {
+                            self.fetchDocumentForInvoice(invoiceId: invoice.id)
+                        }
+                    }
                 case .failure(let error):
                     self.errorMessage = "Error al obtener facturas: \(error.localizedDescription)"
                 }
@@ -80,5 +101,37 @@ class InvoicesViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    private func fetchDocumentForInvoice(invoiceId: String) {
+        let endpoint = "/electronic-documents/invoice/\(invoiceId)"
+        guard let baseUrl = URL(string: NetworkManager.shared.baseURL + endpoint) else { return }
+        
+        var request = URLRequest(url: baseUrl)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        if let token = UserDefaults.standard.string(forKey: "access_token") {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else { return }
+            do {
+                let documentsArray = try JSONDecoder().decode([ElectronicDocumentModel].self, from: data)
+                DispatchQueue.main.async {
+                    if let firstDoc = documentsArray.first {
+                        self.electronicDocuments[invoiceId] = firstDoc
+                    }
+                }
+            } catch {
+                print("DECODING ERROR en sub-consulta: \(error.localizedDescription)")
+            }
+        }.resume()
+    }
+    
+    func abrirEnNavegador(urlString: String?) {
+        guard let urlString = urlString, let url = URL(string: urlString) else { return }
+        UIApplication.shared.open(url)
     }
 }

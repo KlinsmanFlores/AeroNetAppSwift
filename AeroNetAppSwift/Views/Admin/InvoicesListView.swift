@@ -107,6 +107,31 @@ struct InvoicesListView: View {
                 }
             }
         }
+        .sheet(isPresented: $viewModel.showDocViewer) {
+            NavigationView {
+                ZStack {
+                    Color.theme.background
+                        .ignoresSafeArea()
+                    
+                    if let url = viewModel.activeWebUrl {
+                        WebViewRepresentable(url: url)
+                            .edgesIgnoringSafeArea(.all)
+                    } else {
+                        EmptyStateView(iconName: "doc.text.fill", title: "Error", message: "No se pudo recuperar el enlace de Nubefact.")
+                    }
+                }
+                .navigationTitle(viewModel.activeDocTitle)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Cerrar") {
+                            viewModel.showDocViewer = false
+                        }
+                        .foregroundColor(Color.theme.accent)
+                    }
+                }
+            }
+        }
     }
     
     private var actionButtons: some View {
@@ -189,6 +214,51 @@ struct InvoicesListView: View {
                 Text((invoice.total ?? 0.0).currencyPEN)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.black)
+            }
+            
+            if let doc = viewModel.electronicDocuments[invoice.id] {
+                Divider().background(Color.white.opacity(0.15))
+                
+                VStack(spacing: 8) {
+                    Button(action: {
+                        if let pdfUrlString = doc.pdf_url, let url = URL(string: pdfUrlString) {
+                            viewModel.activeWebUrl = url
+                            viewModel.activeDocTitle = "\(doc.type ?? "COMPROBANTE") \(doc.series ?? "")-\(doc.number ?? 0)"
+                            viewModel.showDocViewer = true
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "doc.text.magnifyingglass")
+                            Text("Ver \(doc.type == "FACTURA" ? "Factura" : "Boleta") Digital")
+                                .font(.system(size: 13, weight: .bold))
+                            Spacer()
+                            Image(systemName: "chevron.right").font(.caption)
+                        }
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 14)
+                        .background(Color.blue.opacity(0.35))
+                        .foregroundColor(.black)
+                        .cornerRadius(10)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    if let xmlStr = doc.xml_url, !xmlStr.isEmpty {
+                        Button(action: {
+                            viewModel.abrirEnNavegador(urlString: xmlStr)
+                        }) {
+                            HStack {
+                                Image(systemName: "arrow.down.doc.fill")
+                                Text("Descargar XML Tributario (SUNAT)")
+                                    .font(.system(size: 11, weight: .medium))
+                                    .foregroundColor(Color.theme.textMuted)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 4)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
+                .padding(.top, 4)
             }
         }
     }

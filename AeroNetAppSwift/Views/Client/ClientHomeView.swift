@@ -5,39 +5,35 @@ struct ClientHomeView: View {
     @StateObject private var viewModel = ClientHomeViewModel()
     
     var body: some View {
-        // 🚀 MEJORA CLARO: Agregamos el contenedor de navegación nativo de iOS
-        NavigationView {
-            ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-                
-                ScrollView {
-                    VStack(spacing: 24) {
-                        headerView
-                        
-                        if viewModel.isLoading {
-                            VStack(spacing: 16) {
-                                ShimmerView(height: 120)
-                                ShimmerView(height: 160)
-                            }
-                            .padding(.horizontal, 20)
-                        } else if let error = viewModel.errorMessage {
-                            errorView(error: error)
-                        } else {
-                            debtSummaryView
-                            servicesSectionView
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [Color.theme.backgroundGradientTop, Color.theme.backgroundGradientBottom]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
+            ScrollView {
+                VStack(spacing: 24) {
+                    headerView
+                    
+                    if viewModel.isLoading {
+                        VStack(spacing: 16) {
+                            ShimmerView(height: 120)
+                            ShimmerView(height: 160)
                         }
+                        .padding(.horizontal, 20)
+                    } else if let error = viewModel.errorMessage {
+                        errorView(error: error)
+                    } else {
+                        debtSummaryView
+                        servicesSectionView
                     }
-                    .padding(.bottom, 30)
                 }
+                .padding(.bottom, 30)
             }
-            // Ocultamos la barra por defecto para que no choque con tu hermosa cabecera personalizada
-            .navigationBarHidden(true)
         }
+        .navigationBarHidden(true)
         .onAppear {
             viewModel.loadDashboard()
         }
